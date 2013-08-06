@@ -1,4 +1,4 @@
-
+#include "cbsasl/cbsasl.h"
 #include "config.h"
 #include "pwfile.h"
 
@@ -25,7 +25,7 @@ static void remove_pw_file() {
     assert(remove(cbpwfile) == 0);
 }
 
-static void test_pwile() {
+static void test_pwfile() {
     char* cfg;
 
     create_pw_file();
@@ -43,6 +43,6 @@ static void test_pwile() {
 }
 
 int main() {
-    test_pwile();
+    test_pwfile();
     return 0;
 }
