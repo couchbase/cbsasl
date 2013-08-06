@@ -24,7 +24,8 @@ static user_db_entry_t **user_ht;
 static const int n_uht_buckets = 12289;
 
 static void kill_whitey(char *s) {
-    for (int i = strlen(s) - 1; i > 0 && isspace(s[i]); i--) {
+    int i;
+    for (i = strlen(s) - 1; i > 0 && isspace(s[i]); i--) {
         s[i] = '\0';
     }
 }
@@ -39,28 +40,10 @@ static const char *get_isasl_filename(void) {
     return getenv("ISASL_PWFILE");
 }
 
-static char *find_pw(const char *u, char **cfg) {
-    assert(u);
-    assert(user_ht);
-    
-    int h = u_hash_key(u);
-    
-    user_db_entry_t *e = user_ht[h];
-    while (e && strcmp(e->username, u) != 0) {
-        e = e->next;
-    }
-    
-    if (e != NULL) {
-        *cfg = e->config;
-        return e->password;
-    } else {
-        return NULL;
-    }
-}
-
 static void free_user_ht(void) {
     if (user_ht) {
-        for (int i = 0; i < n_uht_buckets; i++) {
+        int i;
+        for (i = 0; i < n_uht_buckets; i++) {
             while (user_ht[i]) {
                 user_db_entry_t *e = user_ht[i];
                 user_db_entry_t *n = e->next;
@@ -98,14 +81,26 @@ static void store_pw(user_db_entry_t **ht,
     ht[h] = e;
 }
 
-bool check_up(const char *username,
-              const char *password,
-              char **cfg) {
+char *find_pw(const char *u, char **cfg) {
+    assert(u);
+    assert(user_ht);
+
     pthread_mutex_lock(&uhash_lock);
-    char *pw = find_pw(username, cfg);
-    bool rv = pw && (strcmp(password, pw) == 0);
-    pthread_mutex_unlock(&uhash_lock);
-    return rv;
+    int h = u_hash_key(u);
+    
+    user_db_entry_t *e = user_ht[h];
+    while (e && strcmp(e->username, u) != 0) {
+        e = e->next;
+    }
+    
+    if (e != NULL) {
+        *cfg = e->config;
+        pthread_mutex_unlock(&uhash_lock);
+        return e->password;
+    } else {
+        pthread_mutex_unlock(&uhash_lock);
+        return NULL;
+    }
 }
 
 cbsasl_error_t load_user_db(void) {

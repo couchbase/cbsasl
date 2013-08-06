@@ -33,6 +33,10 @@
 #include <pthread.h>
 #endif
 
+#ifdef HAVE_STDARG_H
+#include <stdarg.h>
+#endif
+
 #ifdef HAVE_STDBOOL_H
 #include <stdbool.h>
 #endif

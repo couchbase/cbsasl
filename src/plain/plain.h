@@ -14,21 +14,24 @@
  *   limitations under the License.
  */
 
-#ifndef SRC_PWFILE_H_
-#define SRC_PWFILE_H_ 1
+#ifndef SRC_PLAIN_PLAIN_H_
+#define SRC_PLAIN_PLAIN_H_ 1
 
 #include "config.h"
+
 #include "cbsasl/cbsasl.h"
+#define MECH_NAME_PLAIN "PLAIN"
 
-typedef struct user_db_entry {
-    char *username;
-    char *password;
-    char *config;
-    struct user_db_entry *next;
-} user_db_entry_t;
+cbsasl_error_t plain_server_init();
 
-char* find_pw(const char *u, char **cfg);
+cbsasl_error_t plain_server_start(cbsasl_conn_t *conn);
 
-cbsasl_error_t load_user_db(void);
+cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
+                                 const char* input,
+                                 unsigned inputlen,
+                                 const char** output,
+                                 unsigned* outputlen);
 
-#endif //  SRC_PWFILE_H_
+cbsasl_mechs_t get_plain_mechs(void);
+
+#endif  // SRC_PLAIN_PLAIN_H_

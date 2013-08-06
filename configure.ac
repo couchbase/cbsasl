@@ -46,8 +46,8 @@ AC_PROG_CXX
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([assert.h ctype.h errno.h pthread.h stdbool.h stdint.h \
-                  stdio.h stdlib.h string.h])
+AC_CHECK_HEADERS([assert.h ctype.h errno.h pthread.h stdarg.h stdbool.h \
+                  stdint.h stdio.h stdlib.h string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_UINT32_T

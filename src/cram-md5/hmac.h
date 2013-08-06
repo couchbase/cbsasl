@@ -14,21 +14,22 @@
  *   limitations under the License.
  */
 
-#ifndef SRC_PWFILE_H_
-#define SRC_PWFILE_H_ 1
+#ifndef SRC_CRAM_MD5_HMAC_H_
+#define SRC_CRAM_MD5_HMAC_H_ 1
+#define DIGEST_LENGTH 16
 
 #include "config.h"
-#include "cbsasl/cbsasl.h"
 
-typedef struct user_db_entry {
-    char *username;
-    char *password;
-    char *config;
-    struct user_db_entry *next;
-} user_db_entry_t;
+/**
+ * Perform hmac on md5
+ *
+ * The code in this function is based on the code provided in rfc 2104.
+ * http://www.ietf.org/rfc/rfc2104.txt
+ */
+void hmac_md5(unsigned char* text,
+              int text_len,
+              unsigned char* key,
+              int keylen,
+              unsigned char* digest);
 
-char* find_pw(const char *u, char **cfg);
-
-cbsasl_error_t load_user_db(void);
-
-#endif //  SRC_PWFILE_H_
+#endif  // SRC_CRAM_MD5_HMAC_H_

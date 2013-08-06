@@ -14,21 +14,24 @@
  *   limitations under the License.
  */
 
-#ifndef SRC_PWFILE_H_
-#define SRC_PWFILE_H_ 1
+#ifndef SRC_CRAM_MD5_CRAM_MD5_H_
+#define SRC_CRAM_MD5_CRAM_MD5_H_ 1
 
 #include "config.h"
 #include "cbsasl/cbsasl.h"
 
-typedef struct user_db_entry {
-    char *username;
-    char *password;
-    char *config;
-    struct user_db_entry *next;
-} user_db_entry_t;
+#define MECH_NAME_CRAM_MD5 "CRAM-MD5"
 
-char* find_pw(const char *u, char **cfg);
+cbsasl_error_t cram_md5_server_init();
 
-cbsasl_error_t load_user_db(void);
+cbsasl_error_t cram_md5_server_start(cbsasl_conn_t* conn);
 
-#endif //  SRC_PWFILE_H_
+cbsasl_error_t cram_md5_server_step(cbsasl_conn_t* conn,
+                                    const char* input,
+                                    unsigned inputlen,
+                                    const char** output,
+                                    unsigned* outputlen);
+
+cbsasl_mechs_t get_cram_md5_mechs(void);
+
+#endif  // SRC_CRAM_MD5_CRAM_MD5_H_
