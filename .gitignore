@@ -1,6 +1,8 @@
 *~
 *.la
 *.lo
+*.log
+*.trs
 *.o
 .deps/
 .dirstamp
@@ -19,6 +21,7 @@ config/depcomp
 config/install-sh
 config/ltmain.sh
 config/missing
+config/test-driver
 configure
 hmac_test
 libtool

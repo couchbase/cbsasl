@@ -34,7 +34,7 @@ hmac_test_CPPFLAGS = $(CPPFLAGS)
 hmac_test_SOURCES = t/hmac_test.c src/cram-md5/hmac.c src/cram-md5/md5.c
 hmac_test_DEPENDENCIES = src/cram-md5/hmac.h src/cram-md5/md5.h
 
-pwfile_test_CPPFLAFS = $(CPPFLAGS)
+pwfile_test_CPPFLAGS = $(CPPFLAGS) -I$(top_srcdir)/include
 pwfile_test_SOURCES = t/pwfile.c src/pwfile.c src/hash.c
 pwfile_test_DEPENDENCIES = src/pwfile.h src/hash.h
 
