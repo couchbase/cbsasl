@@ -51,7 +51,8 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
         return SASL_FAIL;
     }
 
-    conn->config = cfg;
+    conn->username = strdup(user);
+    conn->config = strdup(cfg);
     *output = NULL;
     *outputlen = 0;
     return SASL_OK;

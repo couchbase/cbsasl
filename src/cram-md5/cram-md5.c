@@ -91,7 +91,8 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
         return SASL_FAIL;
     }
 
-    conn->config = cfg;
+    conn->username = user;
+    conn->config = strdup(cfg);
     *output = NULL;
     *outputlen = 0;
     return SASL_OK;
