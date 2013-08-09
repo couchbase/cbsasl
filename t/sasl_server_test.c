@@ -32,6 +32,7 @@ static void create_pw_file() {
 
 static void remove_pw_file() {
     assert(remove(cbpwfile) == 0);
+    free_user_ht();
 }
 
 static void construct_cram_md5_credentials(char* buffer,

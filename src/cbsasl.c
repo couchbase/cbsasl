@@ -44,7 +44,7 @@ cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
                             const char* mech) {
 
     if (*conn != NULL) {
-        cbsasl_dispose(*conn);
+        cbsasl_dispose(conn);
     }
 
     *conn = (cbsasl_conn_t*)malloc(sizeof(cbsasl_conn_t));
@@ -88,6 +88,9 @@ void cbsasl_dispose(cbsasl_conn_t **conn) {
         if ((*conn)->username != NULL) {
             free((*conn)->username);
         }
+	if ((*conn)->config != NULL) {
+	    free((*conn)->config);
+	}
         if ((*conn)->sasl_data != NULL) {
             free((*conn)->sasl_data);
         }

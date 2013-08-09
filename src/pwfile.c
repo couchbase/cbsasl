@@ -40,7 +40,7 @@ static const char *get_isasl_filename(void) {
     return getenv("ISASL_PWFILE");
 }
 
-static void free_user_ht(void) {
+void free_user_ht(void) {
     if (user_ht) {
         int i;
         for (i = 0; i < n_uht_buckets; i++) {

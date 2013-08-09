@@ -22,7 +22,6 @@ libcbsasl_la_SOURCES = include/cbsasl/cbsasl.h \
 
 libcbsasl_la_CPPFLAGS = $(CPPFLAGS) -g -I$(top_srcdir)/include
 libcbsasl_la_LDFLAGS = -R '$(pkglibdir)' -R '$(libdir)'
-libcbsasl_la_CFLAGS = -std=c99
 
 check_PROGRAMS = hmac_test \
                  pwfile_test \

@@ -31,4 +31,6 @@ char* find_pw(const char *u, char **cfg);
 
 cbsasl_error_t load_user_db(void);
 
+void free_user_ht(void);
+
 #endif //  SRC_PWFILE_H_

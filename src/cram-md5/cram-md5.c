@@ -25,7 +25,8 @@
 #define NONCE_SWAPS 100
 
 static void generate_nonce(char* nonce) {
-    for (int i = 0; i < NONCE_LENGTH; i++) {
+    int i;
+    for (i = 0; i < NONCE_LENGTH; i++) {
         nonce[i] = '0' + (rand() % 10);
     }
 }
