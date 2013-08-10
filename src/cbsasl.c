@@ -24,10 +24,6 @@
 
 #define IS_MECH(str, mech) (strncmp(str, mech, strlen(mech)))
 
-void shutdown_sasl(void) {
-
-}
-
 cbsasl_error_t cbsasl_list_mechs(const char **mechs,
                                  unsigned *mechslen) {
     *mechs = "CRAM-MD5 PLAIN";
