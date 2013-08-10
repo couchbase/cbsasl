@@ -17,17 +17,12 @@
 #ifndef SRC_CONFIG_STATIC_H_
 #define SRC_CONFIG_STATIC_H_ 1
 
-#ifdef HAVE_ASSERT_H
-#include <assert.h>
-#endif
-
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
-#endif
-
-#ifdef HAVE_ERRNO_H
 #include <errno.h>
-#endif
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <assert.h>
 
 #ifdef HAVE_PTHREAD_H
 #include <pthread.h>
@@ -35,18 +30,6 @@
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
-#endif
-
-#ifdef HAVE_STDIO_H
-#include <stdio.h>
-#endif
-
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
-
-#ifdef HAVE_STRING_H
-#include <string.h>
 #endif
 
 #ifdef HAVE_SYS_STATS_H
