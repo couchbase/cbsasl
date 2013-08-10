@@ -23,18 +23,22 @@ static void remove_pwdb(void) {
 }
 
 static void test_pwfile(void) {
-    char* cfg;
-    char* password;
+    char cfg[256];
+    char password[256];
 
     create_pwdb();
-    password = find_pw(user1, &cfg);
+
+    assert(find_pw(user1, password, sizeof(password), cfg, sizeof(cfg)));
     assert(strncmp(password, pass1, strlen(pass1)) == 0);
+    assert(*cfg == '\0');
 
-    password = find_pw(user2, &cfg);
+    assert(find_pw(user2, password, sizeof(password), cfg, sizeof(cfg)));
     assert(strncmp(password, pass2, strlen(pass2)) == 0);
+    assert(*cfg == '\0');
 
-    password = find_pw(user3, &cfg);
+    assert(find_pw(user3, password, sizeof(password), cfg, sizeof(cfg)));
     assert(strncmp(password, pass3, strlen(pass3)) == 0);
+    assert(*cfg == '\0');
 
     remove_pwdb();
 }
