@@ -43,14 +43,14 @@ static void construct_cram_md5_credentials(char* buffer,
                                            unsigned passlen,
                                            const char* challenge,
                                            unsigned challengelen) {
+    int i;
+    char md5string[DIGEST_LENGTH * 2];
+    unsigned char digest[DIGEST_LENGTH];
     memcpy(buffer, user, userlen);
     buffer[userlen + 1] = ' ';
 
-    unsigned char digest[DIGEST_LENGTH];
-    hmac_md5((char*)challenge, challengelen, (char*)pass, passlen, digest);
+    hmac_md5((unsigned char*)challenge, challengelen, (unsigned char*)pass, passlen, digest);
 
-    int i;
-    char md5string[DIGEST_LENGTH * 2];
     for(i = 0; i < DIGEST_LENGTH; ++i) {
         sprintf(&md5string[i*2], "%02x", (unsigned int)digest[i]);
     }
@@ -70,6 +70,8 @@ static void test_list_mechs() {
 
 static void test_plain_auth() {
     cbsasl_conn_t* conn = NULL;
+    const char* output = NULL;
+    unsigned outputlen = 0;
 
     cbsasl_error_t err = cbsasl_init();
     assert(err == SASL_OK);
@@ -80,8 +82,6 @@ static void test_plain_auth() {
     err = cbsasl_start(&conn, "PLAIN");
     assert(err == SASL_CONTINUE);
 
-    const char* output = NULL;
-    unsigned outputlen = 0;
     err = cbsasl_step(conn, "\0mikewied\0mikepw", 16, &output, &outputlen);
     assert(err == SASL_OK);
     if (output != NULL) {
@@ -96,6 +96,10 @@ static void test_cram_md5_auth() {
     const char* user = "mikewied";
     const char* pass = "mikepw";
     cbsasl_conn_t* conn = NULL;
+    char creds[128];
+    unsigned credslen = 0;
+    const char* output = NULL;
+    unsigned outputlen = 0;
 
     cbsasl_error_t err = cbsasl_init();
     assert(err == SASL_OK);
@@ -104,14 +108,10 @@ static void test_cram_md5_auth() {
     assert(err == SASL_CONTINUE);
     assert(conn->sasl_data_len == 30);
 
-    char creds[128];
-    unsigned credslen = 0;
     construct_cram_md5_credentials(creds, &credslen, user, strlen(user), pass,
                                    strlen(pass), conn->sasl_data,
                                    conn->sasl_data_len);
 
-    const char* output = NULL;
-    unsigned outputlen = 0;
     err = cbsasl_step(conn, creds, credslen, &output, &outputlen);
     assert(err == SASL_OK);
     if (output != NULL) {
