@@ -35,21 +35,6 @@ typedef cbsasl_error_t (*cbsasl_start_fn)(cbsasl_conn_t*);
 typedef cbsasl_error_t (*cbsasl_step_fn)(cbsasl_conn_t*, const char*,
                                          unsigned, const char**, unsigned*);
 
-typedef struct cbsasl_mechs {
-    const char* name;
-    cbsasl_init_fn init;
-    cbsasl_start_fn start;
-    cbsasl_step_fn step;
-} cbsasl_mechs_t;
-
-struct cbsasl_conn_t {
-    char* username;
-    char* config;
-    char* sasl_data;
-    unsigned sasl_data_len;
-    cbsasl_mechs_t mech;
-};
-
 /**
  * Lists all of the mechanisms this sasl server supports
  *

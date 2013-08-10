@@ -14,9 +14,8 @@
  *   limitations under the License.
  */
 
-#include "config.h"
+#include "internal.h"
 
-#include "cbsasl/cbsasl.h"
 #include "cram-md5/cram-md5.h"
 #include "plain/plain.h"
 #include "pwfile.h"

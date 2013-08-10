@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-#include "config.h"
+#include "internal.h"
 #include "cbsasl/cbsasl.h"
 #include "cram-md5/hmac.h"
 

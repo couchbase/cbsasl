@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-#include "config.h"
+#include "internal.h"
 
 #include "hash.h"
 #include "pwfile.h"

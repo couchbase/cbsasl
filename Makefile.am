@@ -29,7 +29,7 @@ check_PROGRAMS = hmac_test \
 
 TESTS=${check_PROGRAMS}
 
-hmac_test_CPPFLAGS = $(CPPFLAGS)
+hmac_test_CPPFLAGS = $(CPPFLAGS) -I$(top_srcdir)/include
 hmac_test_SOURCES = t/hmac_test.c src/cram-md5/hmac.c src/cram-md5/md5.c
 hmac_test_DEPENDENCIES = src/cram-md5/hmac.h src/cram-md5/md5.h
 
