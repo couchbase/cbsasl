@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.61])
 m4_include([m4/version.m4])
-AC_INIT([cbsasl], [VERSION_NUMBER], abhinav@couchbase.com)
+AC_INIT([cbsasl], [VERSION_NUMBER], support@couchbase.com)
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([src/cbsasl.c])
