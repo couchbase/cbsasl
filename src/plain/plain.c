@@ -49,11 +49,12 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
         }
         if (pwlen < 256) {
             char *cfg = NULL;
+            char* pwd;
+
             password[pwlen] = '\0';
             memcpy(password, input + 2 + strlen(username), pwlen);
 
-            char* pwd = find_pw(username, &cfg);
-            if (pwd == NULL) {
+            if ((pwd = find_pw(username, &cfg)) == NULL) {
                 return SASL_FAIL;
             }
 

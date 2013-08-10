@@ -31,6 +31,7 @@ void hmac_md5(unsigned char* text,
     unsigned char k_ipad[65];
     unsigned char k_opad[65];
     unsigned char tk[16];
+    int i;
 
     if (keylen > 64) {
         MD5_CTX ctx;
@@ -46,7 +47,6 @@ void hmac_md5(unsigned char* text,
     memcpy(k_ipad, key, keylen);
     memcpy(k_opad, key, keylen);
 
-    int i;
     for (i = 0; i < 64; i++) {
         k_ipad[i] ^= 0x36;
         k_opad[i] ^= 0x5c;

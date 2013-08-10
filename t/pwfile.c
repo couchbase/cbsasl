@@ -28,10 +28,11 @@ static void remove_pw_file() {
 
 static void test_pwfile() {
     char* cfg;
+    char* password;
 
     create_pw_file();
     assert(load_user_db() == SASL_OK);
-    char* password = find_pw(user1, &cfg);
+    password = find_pw(user1, &cfg);
     assert(strncmp(password, pass1, strlen(pass1)) == 0);
 
     password = find_pw(user2, &cfg);

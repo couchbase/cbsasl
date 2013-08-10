@@ -63,10 +63,14 @@ static void store_pw(user_db_entry_t **ht,
                      const char *u,
                      const char *p,
                      const char *cfg) {
+    user_db_entry_t *e;
+    int h;
+
     assert(ht);
     assert(u);
     assert(p);
-    user_db_entry_t *e = calloc(1, sizeof(user_db_entry_t));
+
+    e = calloc(1, sizeof(user_db_entry_t));
     assert(e);
     e->username = strdup(u);
     assert(e->username);
@@ -74,25 +78,28 @@ static void store_pw(user_db_entry_t **ht,
     assert(e->password);
     e->config = cfg ? strdup(cfg) : NULL;
     assert(!cfg || e->config);
-    
-    int h = u_hash_key(u);
-    
+
+    h = u_hash_key(u);
+
     e->next = ht[h];
     ht[h] = e;
 }
 
 char *find_pw(const char *u, char **cfg) {
+    int h;
+    user_db_entry_t *e;
+
     assert(u);
     assert(user_ht);
 
     pthread_mutex_lock(&uhash_lock);
-    int h = u_hash_key(u);
-    
-    user_db_entry_t *e = user_ht[h];
+    h = u_hash_key(u);
+
+    e = user_ht[h];
     while (e && strcmp(e->username, u) != 0) {
         e = e->next;
     }
-    
+
     if (e != NULL) {
         *cfg = e->config;
         pthread_mutex_unlock(&uhash_lock);
@@ -104,19 +111,21 @@ char *find_pw(const char *u, char **cfg) {
 }
 
 cbsasl_error_t load_user_db(void) {
+    user_db_entry_t **new_ut;
+    FILE *sfile;
+    char up[128];
     const char *filename = get_isasl_filename();
     if (!filename) {
         return SASL_OK;
     }
-    
-    FILE *sfile = fopen(filename, "r");
+
+    sfile = fopen(filename, "r");
     if (!sfile) {
         return SASL_FAIL;
     }
-    
-    user_db_entry_t **new_ut = calloc(n_uht_buckets,
-                                      sizeof(user_db_entry_t*));
-    
+
+    new_ut = calloc(n_uht_buckets, sizeof(user_db_entry_t*));
+
     if (!new_ut) {
         fclose(sfile);
         return SASL_NOMEM;
@@ -127,7 +136,6 @@ cbsasl_error_t load_user_db(void) {
     /* Lines should look like... */
     /*   <NAME><whitespace><PASSWORD><whitespace><CONFIG><optional_whitespace> */
     /* */
-    char up[128];
     while (fgets(up, sizeof(up), sfile)) {
         if (up[0] != '#') {
             char *uname = up, *p = up, *cfg = NULL;
@@ -165,7 +173,7 @@ cbsasl_error_t load_user_db(void) {
             store_pw(new_ut, uname, p, cfg);
         }
     }
-    
+
     fclose(sfile);
     /*
      if (settings.verbose) {
@@ -179,6 +187,6 @@ cbsasl_error_t load_user_db(void) {
     free_user_ht();
     user_ht = new_ut;
     pthread_mutex_unlock(&uhash_lock);
-    
+
     return SASL_OK;
 }
