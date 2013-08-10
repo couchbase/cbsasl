@@ -37,7 +37,7 @@ AH_TOP([
 
 AH_BOTTOM([
 #include "config_static.h"
-#endif  // SRC_CONFIG_H_
+#endif  /* SRC_CONFIG_H_ */
 ])
 
 # Checks for programs.

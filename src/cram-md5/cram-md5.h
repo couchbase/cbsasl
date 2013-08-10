@@ -34,4 +34,4 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t* conn,
 
 cbsasl_mechs_t get_cram_md5_mechs(void);
 
-#endif  // SRC_CRAM_MD5_CRAM_MD5_H_
+#endif  /* SRC_CRAM_MD5_CRAM_MD5_H_ */

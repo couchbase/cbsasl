@@ -34,4 +34,4 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
 
 cbsasl_mechs_t get_plain_mechs(void);
 
-#endif  // SRC_PLAIN_PLAIN_H_
+#endif  /* SRC_PLAIN_PLAIN_H_ */
