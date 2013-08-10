@@ -33,4 +33,4 @@ cbsasl_error_t load_user_db(void);
 
 void free_user_ht(void);
 
-#endif //  SRC_PWFILE_H_
+#endif /*  SRC_PWFILE_H_ */

@@ -32,4 +32,4 @@ void hmac_md5(unsigned char* text,
               int keylen,
               unsigned char* digest);
 
-#endif  // SRC_CRAM_MD5_HMAC_H_
+#endif  /* SRC_CRAM_MD5_HMAC_H_ */

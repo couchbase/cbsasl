@@ -65,4 +65,4 @@
 #include <unistd.h>
 #endif
 
-#endif //  SRC_CONFIG_STATIC_H_
+#endif /* SRC_CONFIG_STATIC_H_ */
