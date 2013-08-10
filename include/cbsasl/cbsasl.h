@@ -17,6 +17,8 @@
 #ifndef INCLUDE_CBSASL_CBSASL_H_
 #define INCLUDE_CBSASL_CBSASL_H_ 1
 
+#include <cbsasl/visibility.h>
+
 typedef enum cbsasl_error {
     SASL_OK,
     SASL_CONTINUE,
@@ -56,6 +58,7 @@ struct cbsasl_conn_t {
  *
  * @return Whether or not an error occured while getting the mechanism list
  */
+CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_list_mechs(const char **mechs,
                                  unsigned *mechslen);
 
@@ -67,11 +70,12 @@ cbsasl_error_t cbsasl_list_mechs(const char **mechs,
  *
  * @return Whether or not the sasl server initialization was successful
  */
+CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_init();
 
 /**
  * Creates a sasl connection and begins authentication
- * 
+ *
  * When a client receives a request for sasl authentication this function is
  * called in order to initialize the sasl connection based on the mechanism
  * specified.
@@ -81,6 +85,7 @@ cbsasl_error_t cbsasl_init();
  *
  * @return Whether or not the mecahnism initialization was successful
  */
+CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
                             const char* mechanism);
 
@@ -92,6 +97,7 @@ cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
  *
  * @return Whether or not the sasl step was successful
  */
+CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
                            const char* input,
                            unsigned inputlen,
@@ -103,6 +109,7 @@ cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
  *
  * @param conn The sasl connection to free
  */
+CBSASL_PUBLIC_API
 void cbsasl_dispose(cbsasl_conn_t **pconn);
 
 #endif  /* INCLUDE_CBSASL_CBSASL_H_ */
