@@ -19,174 +19,170 @@
 #include "hash.h"
 #include "pwfile.h"
 
-static pthread_mutex_t uhash_lock = PTHREAD_MUTEX_INITIALIZER;
-static user_db_entry_t **user_ht;
-static const int n_uht_buckets = 12289;
+typedef struct user_db_entry {
+    char *username;
+    char *password;
+    char *config;
+    struct user_db_entry *next;
+    struct user_db_entry *prev;
+} user_db_entry_t;
 
-static void kill_whitey(char *s) {
-    int i;
-    for (i = strlen(s) - 1; i > 0 && isspace(s[i]); i--) {
-        s[i] = '\0';
+static user_db_entry_t *user_db;
+
+static pthread_mutex_t user_db_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+static user_db_entry_t *destroy_user_entry(user_db_entry_t *e) {
+    user_db_entry_t *ret = e->next;
+    free(e->username);
+    free(e->password);
+    free(e->config);
+    free(e);
+    return ret;
+}
+
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_destroy_creds(void) {
+    user_db_entry_t *p = user_db;
+
+    pthread_mutex_lock(&user_db_mutex);
+    while (p) {
+        p = destroy_user_entry(p);
     }
+    pthread_mutex_unlock(&user_db_mutex);
 }
 
-static int u_hash_key(const char *u) {
-    uint32_t h = hash(u, strlen(u), 0) % n_uht_buckets;
-    assert(h < n_uht_buckets);
-    return h;
-}
+/**
+ * Search for a given user in the sorted linked list of users..
+ *
+ * @param u the user to search for
+ * @return the user we search for, _OR_ the user before
+ */
+static user_db_entry_t *search(const char *u) {
+    user_db_entry_t *s = user_db;
+    user_db_entry_t *prev = NULL;
 
-static const char *get_isasl_filename(void) {
-    return getenv("ISASL_PWFILE");
-}
-
-void free_user_ht(void) {
-    if (user_ht) {
-        int i;
-        for (i = 0; i < n_uht_buckets; i++) {
-            while (user_ht[i]) {
-                user_db_entry_t *e = user_ht[i];
-                user_db_entry_t *n = e->next;
-                free(e->username);
-                free(e->password);
-                free(e->config);
-                free(e);
-                user_ht[i] = n;
-            }
-        }
-        free(user_ht);
-        user_ht = NULL;
+    while (s && strcmp(u, s->username) > 0) {
+        prev = s;
+        s = s->next;
     }
+
+    /* If we moved all the way to the end, let's return the last element */
+    if (s == NULL) {
+        return prev;
+    }
+
+    return s;
 }
 
-static void store_pw(user_db_entry_t **ht,
-                     const char *u,
-                     const char *p,
-                     const char *cfg) {
-    user_db_entry_t *e;
-    int h;
-
-    assert(ht);
-    assert(u);
-    assert(p);
-
-    e = calloc(1, sizeof(user_db_entry_t));
-    assert(e);
-    e->username = strdup(u);
-    assert(e->username);
-    e->password = strdup(p);
-    assert(e->password);
-    e->config = cfg ? strdup(cfg) : NULL;
-    assert(!cfg || e->config);
-
-    h = u_hash_key(u);
-
-    e->next = ht[h];
-    ht[h] = e;
-}
-
+/* @todo this is not safe!!! */
 char *find_pw(const char *u, char **cfg) {
-    int h;
     user_db_entry_t *e;
+    char *ret = NULL;
 
-    assert(u);
-    assert(user_ht);
-
-    pthread_mutex_lock(&uhash_lock);
-    h = u_hash_key(u);
-
-    e = user_ht[h];
-    while (e && strcmp(e->username, u) != 0) {
-        e = e->next;
+    pthread_mutex_lock(&user_db_mutex);
+    if ((e = search(u)) != NULL && strcmp(e->username, u) == 0) {
+        ret = e->password;
+        if (cfg) {
+            *cfg = e->config;
+        }
     }
 
-    if (e != NULL) {
-        *cfg = e->config;
-        pthread_mutex_unlock(&uhash_lock);
-        return e->password;
-    } else {
-        pthread_mutex_unlock(&uhash_lock);
-        return NULL;
-    }
+    pthread_mutex_unlock(&user_db_mutex);
+    return ret;
 }
 
-cbsasl_error_t load_user_db(void) {
-    user_db_entry_t **new_ut;
-    FILE *sfile;
-    char up[128];
-    const char *filename = get_isasl_filename();
-    if (!filename) {
-        return SASL_OK;
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_update_cred(const char *username,
+                                  const char *password,
+                                  const char *config)
+{
+    int h;
+    user_db_entry_t *e;
+    user_db_entry_t *s;
+
+    if (username == NULL) {
+        return SASL_BADPARAM;
     }
 
-    sfile = fopen(filename, "r");
-    if (!sfile) {
-        return SASL_FAIL;
-    }
-
-    new_ut = calloc(n_uht_buckets, sizeof(user_db_entry_t*));
-
-    if (!new_ut) {
-        fclose(sfile);
+    if ((e = calloc(1, sizeof(user_db_entry_t))) == NULL) {
         return SASL_NOMEM;
     }
 
-    /* File has lines that are newline terminated. */
-    /* File may have comment lines that must being with '#'. */
-    /* Lines should look like... */
-    /*   <NAME><whitespace><PASSWORD><whitespace><CONFIG><optional_whitespace> */
-    /* */
-    while (fgets(up, sizeof(up), sfile)) {
-        if (up[0] != '#') {
-            char *uname = up, *p = up, *cfg = NULL;
-            kill_whitey(up);
-            while (*p && !isspace(p[0])) {
-                p++;
-            }
-            /* If p is pointing at a NUL, there's nothing after the username. */
-            if (p[0] != '\0') {
-                p[0] = '\0';
-                p++;
-            }
-            /* p now points to the first character after the (now) */
-            /* null-terminated username. */
-            while (*p && isspace(*p)) {
-                p++;
-            }
-            /* p now points to the first non-whitespace character */
-            /* after the above */
-            cfg = p;
-            if (cfg[0] != '\0') {
-                /* move cfg past the password */
-                while (*cfg && !isspace(cfg[0])) {
-                    cfg++;
-                }
-                if (cfg[0] != '\0') {
-                    cfg[0] = '\0';
-                    cfg++;
-                    /* Skip whitespace */
-                    while (*cfg && isspace(cfg[0])) {
-                        cfg++;
-                    }
-                }
-            }
-            store_pw(new_ut, uname, p, cfg);
-        }
+    if (((e->username = strdup(username)) == NULL) ||
+        (password && (e->password = strdup(password)) == NULL) ||
+        (config && (e->config = strdup(config)) == NULL)) {
+        destroy_user_entry(e);
+        return SASL_NOMEM;
     }
 
-    fclose(sfile);
-    /*
-     if (settings.verbose) {
-     settings.extensions.logger->log(EXTENSION_LOG_INFO, NULL,
-     "Loaded isasl db from %s\n",
-     filename);
-     }
-     */
-    /* Replace the current configuration with the new one */
-    pthread_mutex_lock(&uhash_lock);
-    free_user_ht();
-    user_ht = new_ut;
-    pthread_mutex_unlock(&uhash_lock);
+    pthread_mutex_lock(&user_db_mutex);
+    s = search(username);
+    if (s) {
+        int pos = strcmp(username, s->username);
+        if (pos == 0) {
+            e->next = s->next;
+            e->prev = s->prev;
+            if (e->next) {
+                e->next->prev = e;
+            }
+            if (e->prev) {
+                e->prev->next = e;
+            }
+            destroy_user_entry(s);
+        } else if (pos < 0) {
+            e->next = s;
+            e->prev = s->prev;
+            s->prev = e;
+            if (e->prev) {
+                e->prev->next = e;
+            } else {
+                /* must be first */
+                user_db = e;
+            }
+        } else {
+            e->next = s->next;
+            if (e->next) {
+                e->next->prev = e;
+            }
+            s->next = e;
+            e->prev = s;
+        }
+    } else {
+        user_db = e;
+    }
+
+    pthread_mutex_unlock(&user_db_mutex);
+
+    return SASL_OK;
+}
+
+/**
+ * Delete a user.
+ *
+ * @param username the name of the user (must be terminated with \0)
+ *
+ * @return SASL_OK for success
+ */
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_remove_cred(const char *username) {
+    user_db_entry_t *s;
+    pthread_mutex_lock(&user_db_mutex);
+    s = search(username);
+    if (s && strcmp(s->username, username) == 0) {
+        if (s->prev) {
+            s->prev->next = s->next;
+        } else {
+            /* First node */
+            user_db = s->next;
+        }
+
+        if (s->next) {
+            s->next->prev = s->prev;
+        }
+        destroy_user_entry(s);
+    }
+
+    pthread_mutex_unlock(&user_db_mutex);
 
     return SASL_OK;
 }

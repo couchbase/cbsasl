@@ -44,8 +44,7 @@ typedef cbsasl_error_t (*cbsasl_step_fn)(cbsasl_conn_t*, const char*,
  * @return Whether or not an error occured while getting the mechanism list
  */
 CBSASL_PUBLIC_API
-cbsasl_error_t cbsasl_list_mechs(const char **mechs,
-                                 unsigned *mechslen);
+cbsasl_error_t cbsasl_list_mechs(const char **mechs, unsigned *mechslen);
 
 /**
  * Initializes the sasl server
@@ -71,8 +70,7 @@ cbsasl_error_t cbsasl_init();
  * @return Whether or not the mecahnism initialization was successful
  */
 CBSASL_PUBLIC_API
-cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
-                            const char* mechanism);
+cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn, const char* mechanism);
 
 /**
  * Does username/password authentication
@@ -96,5 +94,40 @@ cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
  */
 CBSASL_PUBLIC_API
 void cbsasl_dispose(cbsasl_conn_t **pconn);
+
+
+/* The following methods is used for password maintenance on the server */
+
+/**
+ * Add or update the username/password combination
+ *
+ * @param username the name of the user (must be terminated with \0)
+ * @param password the password for the user (must be terminated with \0);
+ * @param config an opaque string stored with the user (must be
+ *               terminated with \0)
+ *
+ * @return SASL_OK for success
+ */
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_update_cred(const char *username,
+                                  const char *password,
+                                  const char *config);
+
+/**
+ * Delete a user.
+ *
+ * @param username the name of the user (must be terminated with \0)
+ *
+ * @return SASL_OK for success
+ */
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_remove_cred(const char *username);
+
+/**
+ * Destroy all credentials
+ */
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_destroy_creds(void);
+
 
 #endif  /* INCLUDE_CBSASL_CBSASL_H_ */
