@@ -67,9 +67,9 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
                                     unsigned* outputlen) {
     unsigned int userlen;
     char* user;
-    char* cfg;
-    char* pass;
     unsigned char digest[DIGEST_LENGTH];
+    char passwd[256];
+    char cfg[256];
     int i;
     char md5string[(DIGEST_LENGTH * 2) + 1]; /* sprintf adds \0 */
 
@@ -82,15 +82,14 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
     memcpy(user, input, userlen);
     user[userlen] = '\0';
 
-    pass = find_pw(user, &cfg);
-    if (pass == NULL) {
+    if (find_pw(user, passwd, sizeof(passwd), cfg, sizeof(cfg)) == 0) {
         return SASL_FAIL;
     }
 
     hmac_md5((unsigned char*)conn->sasl_data,
              conn->sasl_data_len,
-             (unsigned char*)pass,
-             strlen(pass), digest);
+             (unsigned char*)passwd,
+             strlen(passwd), digest);
 
     for(i = 0; i < DIGEST_LENGTH; ++i) {
         sprintf(&md5string[i*2], "%02x", (unsigned int)digest[i]);
@@ -101,7 +100,7 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
     }
 
     conn->username = user;
-    if (cfg) {
+    if (*cfg) {
         conn->config = strdup(cfg);
     } else {
         conn->config = NULL;

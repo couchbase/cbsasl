@@ -74,6 +74,29 @@ static user_db_entry_t *search(const char *u) {
     return s;
 }
 
+int find_pw(const char *u, char *passw, int npass, char *cfg, int ncfg) {
+    user_db_entry_t *e;
+    int ret = 0;
+
+    *passw = '\0';
+    *cfg = '\0';
+
+    pthread_mutex_lock(&user_db_mutex);
+    if ((e = search(u)) != NULL && strcmp(e->username, u) == 0) {
+        if (e->password) {
+            snprintf(passw, npass, "%s", e->password);
+        }
+        if (e->config) {
+            snprintf(cfg, ncfg, "%s", e->config);
+        }
+        ret = 1;
+    }
+
+    pthread_mutex_unlock(&user_db_mutex);
+    return ret;
+
+}
+#if 0
 /* @todo this is not safe!!! */
 char *find_pw(const char *u, char **cfg) {
     user_db_entry_t *e;
@@ -90,6 +113,7 @@ char *find_pw(const char *u, char **cfg) {
     pthread_mutex_unlock(&user_db_mutex);
     return ret;
 }
+#endif
 
 CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_update_cred(const char *username,

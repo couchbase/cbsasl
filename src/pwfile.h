@@ -17,6 +17,6 @@
 #ifndef SRC_PWFILE_H_
 #define SRC_PWFILE_H_ 1
 
-char* find_pw(const char *u, char **cfg);
+int find_pw(const char *u, char *passw, int npass, char *cfg, int ncfg);
 
 #endif /*  SRC_PWFILE_H_ */
