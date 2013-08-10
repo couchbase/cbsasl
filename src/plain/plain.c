@@ -13,8 +13,8 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+#include "internal.h"
 
-#include "config.h"
 #include "plain.h"
 #include "pwfile.h"
 

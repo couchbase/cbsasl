@@ -14,7 +14,8 @@
  *   limitations under the License.
  */
 
-#include "config.h"
+#include "internal.h"
+
 #include "cram-md5.h"
 #include "hmac.h"
 #include "pwfile.h"

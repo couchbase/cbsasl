@@ -13,21 +13,25 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+#ifndef SRC_INTERNAL_H
+#define SRC_INTERNAL 1
 
-#ifndef SRC_PWFILE_H_
-#define SRC_PWFILE_H_ 1
+#include "config.h"
+#include <cbsasl/cbsasl.h>
 
-typedef struct user_db_entry {
-    char *username;
-    char *password;
-    char *config;
-    struct user_db_entry *next;
-} user_db_entry_t;
+typedef struct cbsasl_mechs {
+    const char* name;
+    cbsasl_init_fn init;
+    cbsasl_start_fn start;
+    cbsasl_step_fn step;
+} cbsasl_mechs_t;
 
-char* find_pw(const char *u, char **cfg);
+struct cbsasl_conn_t {
+    char* username;
+    char* config;
+    char* sasl_data;
+    unsigned sasl_data_len;
+    cbsasl_mechs_t mech;
+};
 
-cbsasl_error_t load_user_db(void);
-
-void free_user_ht(void);
-
-#endif /*  SRC_PWFILE_H_ */
+#endif /* SRC_INTERNAL_H */

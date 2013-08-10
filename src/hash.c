@@ -9,7 +9,7 @@
  *       or commercial.  It's free."
  *
  */
-#include "config.h"
+#include "internal.h"
 
 /*
  * Since the hash function does bit manipulation, it needs to know
