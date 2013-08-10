@@ -18,21 +18,14 @@
 #include "cbsasl/cbsasl.h"
 #include "cram-md5/hmac.h"
 
-const char* cbpwfile = "/tmp/sasl_server_test.pw";
-
-static void create_pw_file() {
-    FILE *fp = fopen(cbpwfile, "w");
-    assert(fp != NULL);
-
-    fprintf(fp, "mikewied mikepw \ncseo cpw \njlim jpw \n");
-    assert(fclose(fp) == 0);
-
-    putenv("ISASL_PWFILE=/tmp/sasl_server_test.pw");
+static void create_pwdb(void) {
+    assert(cbsasl_update_cred("mikewied", "mikepw", NULL) == SASL_OK);
+    assert(cbsasl_update_cred("cseo", "cpw", NULL) == SASL_OK);
+    assert(cbsasl_update_cred("jlim", "jpw", NULL) == SASL_OK);
 }
 
-static void remove_pw_file() {
-    assert(remove(cbpwfile) == 0);
-    free_user_ht();
+static void remove_pwdb(void) {
+    cbsasl_destroy_creds();
 }
 
 static void construct_cram_md5_credentials(char* buffer,
@@ -59,7 +52,7 @@ static void construct_cram_md5_credentials(char* buffer,
     *bufferlen = 1 + (DIGEST_LENGTH * 2) + userlen;
 }
 
-static void test_list_mechs() {
+static void test_list_mechs(void) {
     const char* mechs = NULL;
     unsigned len = 0;
     cbsasl_error_t err = cbsasl_list_mechs(&mechs, &len);
@@ -68,7 +61,7 @@ static void test_list_mechs() {
     assert(strncmp(mechs, "CRDM-MD5 PLAIN", len) != 0);
 }
 
-static void test_plain_auth() {
+static void test_plain_auth(void) {
     cbsasl_conn_t* conn = NULL;
     const char* output = NULL;
     unsigned outputlen = 0;
@@ -92,7 +85,7 @@ static void test_plain_auth() {
     assert(conn == NULL);
 }
 
-static void test_cram_md5_auth() {
+static void test_cram_md5_auth(void) {
     const char* user = "mikewied";
     const char* pass = "mikepw";
     cbsasl_conn_t* conn = NULL;
@@ -122,13 +115,13 @@ static void test_cram_md5_auth() {
     assert(conn == NULL);
 }
 
-int main() {
-    create_pw_file();
+int main(void) {
+    create_pwdb();
 
     test_list_mechs();
     test_plain_auth();
     test_cram_md5_auth();
 
-    remove_pw_file();
+    remove_pwdb();
     return 0;
 }

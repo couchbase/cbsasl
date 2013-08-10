@@ -33,7 +33,7 @@ cbsasl_error_t cbsasl_list_mechs(const char **mechs,
 CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_init() {
     srand(getpid());
-    return load_user_db();
+    return SASL_OK;
 }
 
 CBSASL_PUBLIC_API

@@ -17,17 +17,6 @@
 #ifndef SRC_PWFILE_H_
 #define SRC_PWFILE_H_ 1
 
-typedef struct user_db_entry {
-    char *username;
-    char *password;
-    char *config;
-    struct user_db_entry *next;
-} user_db_entry_t;
-
 char* find_pw(const char *u, char **cfg);
-
-cbsasl_error_t load_user_db(void);
-
-void free_user_ht(void);
 
 #endif /*  SRC_PWFILE_H_ */
