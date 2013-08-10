@@ -35,7 +35,7 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
                                  unsigned* outputlen) {
 
     while (inputlen > 0 && input[0] != '\0') {
-        // Skip authzid
+        /* Skip authzid */
         input++;
         inputlen--;
     }

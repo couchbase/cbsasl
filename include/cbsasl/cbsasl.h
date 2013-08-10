@@ -105,4 +105,4 @@ cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
  */
 void cbsasl_dispose(cbsasl_conn_t **pconn);
 
-#endif  // INCLUDE_CBSASL_CBSASL_H_
+#endif  /* INCLUDE_CBSASL_CBSASL_H_ */

@@ -121,12 +121,12 @@ cbsasl_error_t load_user_db(void) {
         fclose(sfile);
         return SASL_NOMEM;
     }
-    
-    // File has lines that are newline terminated.
-    // File may have comment lines that must being with '#'.
-    // Lines should look like...
-    //   <NAME><whitespace><PASSWORD><whitespace><CONFIG><optional_whitespace>
-    //
+
+    /* File has lines that are newline terminated. */
+    /* File may have comment lines that must being with '#'. */
+    /* Lines should look like... */
+    /*   <NAME><whitespace><PASSWORD><whitespace><CONFIG><optional_whitespace> */
+    /* */
     char up[128];
     while (fgets(up, sizeof(up), sfile)) {
         if (up[0] != '#') {
@@ -135,28 +135,28 @@ cbsasl_error_t load_user_db(void) {
             while (*p && !isspace(p[0])) {
                 p++;
             }
-            // If p is pointing at a NUL, there's nothing after the username.
+            /* If p is pointing at a NUL, there's nothing after the username. */
             if (p[0] != '\0') {
                 p[0] = '\0';
                 p++;
             }
-            // p now points to the first character after the (now)
-            // null-terminated username.
+            /* p now points to the first character after the (now) */
+            /* null-terminated username. */
             while (*p && isspace(*p)) {
                 p++;
             }
-            // p now points to the first non-whitespace character
-            // after the above
+            /* p now points to the first non-whitespace character */
+            /* after the above */
             cfg = p;
             if (cfg[0] != '\0') {
-                // move cfg past the password
+                /* move cfg past the password */
                 while (*cfg && !isspace(cfg[0])) {
                     cfg++;
                 }
                 if (cfg[0] != '\0') {
                     cfg[0] = '\0';
                     cfg++;
-                    // Skip whitespace
+                    /* Skip whitespace */
                     while (*cfg && isspace(cfg[0])) {
                         cfg++;
                     }

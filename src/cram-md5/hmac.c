@@ -52,13 +52,13 @@ void hmac_md5(unsigned char* text,
         k_opad[i] ^= 0x5c;
     }
 
-    // Perform inner md5
+    /* Perform inner md5 */
     MD5_Init(&context);
     MD5_Update(&context, k_ipad, 64);
     MD5_Update(&context, text, textlen);
     MD5_Final(digest, &context);
 
-    // Perform outer md5
+    /* Perform outer md5 */
     MD5_Init(&context);
     MD5_Update(&context, k_opad, 64);
     MD5_Update(&context, digest, 16);
