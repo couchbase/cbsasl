@@ -44,7 +44,7 @@ static void construct_cram_md5_credentials(char* buffer,
                                            const char* challenge,
                                            unsigned challengelen) {
     int i;
-    char md5string[DIGEST_LENGTH * 2];
+    char md5string[(DIGEST_LENGTH * 2) + 1]; /* sprintf adds an exta \0 */
     unsigned char digest[DIGEST_LENGTH];
     memcpy(buffer, user, userlen);
     buffer[userlen + 1] = ' ';
