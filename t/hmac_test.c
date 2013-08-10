@@ -26,7 +26,7 @@
 static void test1() {
     unsigned char key[16] = {0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b,
                              0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b};
-    unsigned char* data = "Hi There";
+    unsigned char* data = (unsigned char*)"Hi There";
     unsigned char digest[DIGEST_LENGTH] = {0x92, 0x94, 0x72, 0x7a,
                                            0x36, 0x38, 0xbb, 0x1c,
                                            0x13, 0xf4, 0x8e, 0xf8,
@@ -38,8 +38,8 @@ static void test1() {
 }
 
 static void test2() {
-    unsigned char* key = "Jefe";
-    unsigned char* data = "what do ya want for nothing?";
+    unsigned char* key = (unsigned char*)"Jefe";
+    unsigned char* data = (unsigned char*)"what do ya want for nothing?";
 
     unsigned char digest[DIGEST_LENGTH] = {0x75, 0x0c, 0x78, 0x3e,
                                            0x6a, 0xb0, 0xb5, 0x03,
@@ -96,7 +96,7 @@ static void test4() {
 static void test5() {
     unsigned char key[16] = {0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c,
                              0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c};
-    unsigned char* data = "Test With Truncation";
+    unsigned char* data = (unsigned char*)"Test With Truncation";
     unsigned char digest[DIGEST_LENGTH] = {0x56, 0x46, 0x1e, 0xf2,
                                            0x34, 0x2e, 0xdc, 0x00,
                                            0xf9, 0xba, 0xb9, 0x95,
@@ -118,7 +118,7 @@ static void test6() {
                              0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
                              0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
                              0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
-    unsigned char* data = "Test Using Larger Than Block-Size Key - "
+    unsigned char* data = (unsigned char*)"Test Using Larger Than Block-Size Key - "
                           "Hash Key First";
     unsigned char digest[DIGEST_LENGTH] = {0x6b, 0x1a, 0xb7, 0xfe,
                                            0x4b, 0xd7, 0xbf, 0x8f,
@@ -141,8 +141,8 @@ static void test7() {
                              0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
                              0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
                              0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
-    unsigned char* data = "Test Using Larger Than Block-Size Key and Larger"
-                          " Than One Block-Size Data";
+    unsigned char* data = (unsigned char*)"Test Using Larger Than Block-Size Key"
+                          " and Larger Than One Block-Size Data";
     unsigned char digest[DIGEST_LENGTH] = {0x6f, 0x63, 0x0f, 0xad,
                                            0x67, 0xcd, 0xa0, 0xee,
                                            0x1f, 0xb1, 0xf5, 0x62,

@@ -42,6 +42,7 @@ cbsasl_error_t cbsasl_init() {
 
 cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
                             const char* mech) {
+    cbsasl_error_t err;
 
     if (*conn != NULL) {
         cbsasl_dispose(conn);
@@ -62,7 +63,6 @@ cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
         return SASL_BADPARAM;
     }
 
-    cbsasl_error_t err;
     if ((err = (*conn)->mech.init()) != SASL_OK) {
         return err;
     }
