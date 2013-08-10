@@ -85,15 +85,9 @@ cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
 
 void cbsasl_dispose(cbsasl_conn_t **conn) {
     if (*conn != NULL) {
-        if ((*conn)->username != NULL) {
-            free((*conn)->username);
-        }
-	if ((*conn)->config != NULL) {
-	    free((*conn)->config);
-	}
-        if ((*conn)->sasl_data != NULL) {
-            free((*conn)->sasl_data);
-        }
+        free((*conn)->username);
+        free((*conn)->config);
+        free((*conn)->sasl_data);
         free(*conn);
         *conn = NULL;
     }
