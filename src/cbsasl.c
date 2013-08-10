@@ -47,15 +47,10 @@ cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
         cbsasl_dispose(conn);
     }
 
-    *conn = (cbsasl_conn_t*)malloc(sizeof(cbsasl_conn_t));
+    *conn = calloc(1, sizeof(cbsasl_conn_t));
     if (*conn == NULL) {
         return SASL_NOMEM;
     }
-
-    (*conn)->username = NULL;
-    (*conn)->config = NULL;
-    (*conn)->sasl_data = NULL;
-    (*conn)->sasl_data_len = 0;
 
     if (IS_MECH(mech, MECH_NAME_PLAIN) == 0) {
         cbsasl_mechs_t plain_mech = get_plain_mechs();
