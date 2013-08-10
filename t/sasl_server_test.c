@@ -82,7 +82,7 @@ static void test_plain_auth() {
 
     const char* output = NULL;
     unsigned outputlen = 0;
-    err = cbsasl_step(conn, "mikewied\0mikepw", 15, &output, &outputlen);
+    err = cbsasl_step(conn, "\0mikewied\0mikepw", 16, &output, &outputlen);
     assert(err == SASL_OK);
     if (output != NULL) {
         free((char*)output);

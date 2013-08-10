@@ -69,7 +69,7 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
     }
 
     unsigned userlen = inputlen - (DIGEST_LENGTH * 2) - 1;
-    char* user = (char*)malloc((userlen + 1) * sizeof(char));
+    char* user = (char*)calloc((userlen + 1) * sizeof(char), 1);
     memcpy(user, input, userlen);
     user[userlen] = '\0';
 

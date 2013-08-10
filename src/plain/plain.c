@@ -33,26 +33,37 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
                                  unsigned inputlen,
                                  const char** output,
                                  unsigned* outputlen) {
-    const char* user = input;
-    unsigned userlen = strlen(input);
-    unsigned passlen = inputlen - userlen - 1;
 
-    char* cfg;
-    char* pwd = find_pw(user, &cfg);
-    if (pwd == NULL) {
-        return SASL_FAIL;
+    while (inputlen > 0 && input[0] != '\0') {
+        // Skip authzid
+        input++;
+        inputlen--;
     }
+    if (inputlen > 2 && inputlen < 128 && input[0] == '\0') {
+        const char *username = input + 1;
+        char password[256];
+        int pwlen = inputlen - 2 - strlen(username);
 
-    if (strlen(pwd) != passlen) {
-        return SASL_FAIL;
+        if (pwlen < 0) {
+            return SASL_BADPARAM;
+        }
+        if (pwlen < 256) {
+            char *cfg = NULL;
+            password[pwlen] = '\0';
+            memcpy(password, input + 2 + strlen(username), pwlen);
+
+            char* pwd = find_pw(username, &cfg);
+            if (pwd == NULL) {
+                return SASL_FAIL;
+            }
+
+            if (memcmp(password, pwd, strlen(pwd)) != 0) {
+                return SASL_FAIL;
+            }
+            conn->username = strdup(username);
+            conn->config = strdup(cfg);
+        }
     }
-
-    if (memcmp(&input[userlen + 1], pwd, strlen(pwd)) != 0) {
-        return SASL_FAIL;
-    }
-
-    conn->username = strdup(user);
-    conn->config = strdup(cfg);
     *output = NULL;
     *outputlen = 0;
     return SASL_OK;
