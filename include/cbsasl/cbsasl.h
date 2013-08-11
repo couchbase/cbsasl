@@ -40,6 +40,38 @@ typedef cbsasl_error_t (*cbsasl_step_fn)(cbsasl_conn_t*, const char*,
                                          unsigned, const char**, unsigned*);
 
 /**
+ * Get the username connected to a conn structure
+ *
+ * @param conn the connection structure to query
+ *
+ * @return the username assigned to the conn structure
+ */
+CBSASL_PUBLIC_API
+const char* cbsasl_conn_get_user(cbsasl_conn_t *conn);
+
+/**
+ * Get the configuration associated with a conn structure
+ *
+ * @param conn the connection structure to query
+ *
+ * @return the configuration associated to the conn structure
+ */
+CBSASL_PUBLIC_API
+const char* cbsasl_conn_get_config(cbsasl_conn_t *conn);
+
+/**
+ * Get the data associated with a conn structure
+ *
+ * @param conn the connection structure to query
+ * @param datalen the length of the data (out)
+ *
+ * @return the data associated to the conn structure
+ */
+CBSASL_PUBLIC_API
+const void* cbsasl_conn_get_data(cbsasl_conn_t *conn, unsigned int *datalen);
+
+
+/**
  * Lists all of the mechanisms this sasl server supports
  *
  * @param mechs A string containing all supported mechanism names

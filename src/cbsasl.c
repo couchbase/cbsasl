@@ -86,3 +86,21 @@ void cbsasl_dispose(cbsasl_conn_t **conn) {
         *conn = NULL;
     }
 }
+
+CBSASL_PUBLIC_API
+const char* cbsasl_conn_get_user(cbsasl_conn_t *conn) {
+    return conn->username;
+}
+
+CBSASL_PUBLIC_API
+const char* cbsasl_conn_get_config(cbsasl_conn_t *conn) {
+    return conn->config;
+}
+
+CBSASL_PUBLIC_API
+const void* cbsasl_conn_get_data(cbsasl_conn_t *conn, unsigned int *datalen) {
+    if (datalen) {
+        *datalen = conn->sasl_data_len;
+    }
+    return conn->sasl_data;
+}
