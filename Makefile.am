@@ -1,7 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
 lib_LTLIBRARIES = libcbsasl.la
-pkginclude_HEADERS = include/cbsasl/cbsasl.h
+pkginclude_HEADERS = include/cbsasl/cbsasl.h include/cbsasl/visibility.h
 
 libcbsasl_la_includedir = $(libdir)
 libcbsasl_la_SOURCES = include/cbsasl/cbsasl.h \
