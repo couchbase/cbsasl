@@ -19,6 +19,10 @@
 
 #include <cbsasl/visibility.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum cbsasl_error {
     SASL_OK,
     SASL_CONTINUE,
@@ -129,5 +133,8 @@ cbsasl_error_t cbsasl_remove_cred(const char *username);
 CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_destroy_creds(void);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* INCLUDE_CBSASL_CBSASL_H_ */
