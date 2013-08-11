@@ -13,31 +13,25 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+#ifndef SRC_INTERNAL_H
+#define SRC_INTERNAL 1
 
-#ifndef SRC_CONFIG_STATIC_H_
-#define SRC_CONFIG_STATIC_H_ 1
+#include "config.h"
+#include <cbsasl/cbsasl.h>
 
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <assert.h>
+typedef struct cbsasl_mechs {
+    const char* name;
+    cbsasl_init_fn init;
+    cbsasl_start_fn start;
+    cbsasl_step_fn step;
+} cbsasl_mechs_t;
 
-#ifdef HAVE_PTHREAD_H
-#include <pthread.h>
-#endif
+struct cbsasl_conn_t {
+    char* username;
+    char* config;
+    char* sasl_data;
+    unsigned sasl_data_len;
+    cbsasl_mechs_t mech;
+};
 
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
-#ifdef HAVE_SYS_STATS_H
-#include <sys/stats.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-#endif /* SRC_CONFIG_STATIC_H_ */
+#endif /* SRC_INTERNAL_H */

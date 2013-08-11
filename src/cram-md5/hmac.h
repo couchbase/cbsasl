@@ -18,8 +18,6 @@
 #define SRC_CRAM_MD5_HMAC_H_ 1
 #define DIGEST_LENGTH 16
 
-#include "config.h"
-
 /**
  * Perform hmac on md5
  *
@@ -32,4 +30,4 @@ void hmac_md5(unsigned char* text,
               int keylen,
               unsigned char* digest);
 
-#endif  // SRC_CRAM_MD5_HMAC_H_
+#endif  /* SRC_CRAM_MD5_HMAC_H_ */

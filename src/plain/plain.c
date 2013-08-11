@@ -13,8 +13,8 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+#include "internal.h"
 
-#include "config.h"
 #include "plain.h"
 #include "pwfile.h"
 
@@ -33,35 +33,37 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
                                  unsigned inputlen,
                                  const char** output,
                                  unsigned* outputlen) {
-
     while (inputlen > 0 && input[0] != '\0') {
-        // Skip authzid
+        /* Skip authzid */
         input++;
         inputlen--;
     }
     if (inputlen > 2 && inputlen < 128 && input[0] == '\0') {
         const char *username = input + 1;
+        char passwd[256];
+        char cfg[256];
         char password[256];
         int pwlen = inputlen - 2 - strlen(username);
 
-        if (pwlen < 0) {
+        if (pwlen < 0 || pwlen > 255) {
             return SASL_BADPARAM;
         }
-        if (pwlen < 256) {
-            char *cfg = NULL;
-            password[pwlen] = '\0';
-            memcpy(password, input + 2 + strlen(username), pwlen);
 
-            char* pwd = find_pw(username, &cfg);
-            if (pwd == NULL) {
-                return SASL_FAIL;
-            }
+        password[pwlen] = '\0';
+        memcpy(password, input + 2 + strlen(username), pwlen);
 
-            if (memcmp(password, pwd, strlen(pwd)) != 0) {
-                return SASL_FAIL;
-            }
-            conn->username = strdup(username);
+        if (find_pw(username, passwd, sizeof(passwd), cfg, sizeof(cfg)) == 0) {
+            return SASL_FAIL;
+        }
+
+        if (memcmp(password, passwd, strlen(passwd)) != 0) {
+            return SASL_FAIL;
+        }
+        conn->username = strdup(username);
+        if (*cfg) {
             conn->config = strdup(cfg);
+        } else {
+            conn->config = NULL;
         }
     }
     *output = NULL;

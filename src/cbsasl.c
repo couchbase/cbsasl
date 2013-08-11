@@ -14,19 +14,14 @@
  *   limitations under the License.
  */
 
-#include "config.h"
+#include "internal.h"
 
-#include "cbsasl/cbsasl.h"
 #include "cram-md5/cram-md5.h"
 #include "plain/plain.h"
 #include "pwfile.h"
 #include <time.h>
 
 #define IS_MECH(str, mech) (strncmp(str, mech, strlen(mech)))
-
-void shutdown_sasl(void) {
-
-}
 
 cbsasl_error_t cbsasl_list_mechs(const char **mechs,
                                  unsigned *mechslen) {
@@ -35,27 +30,25 @@ cbsasl_error_t cbsasl_list_mechs(const char **mechs,
     return SASL_OK;
 }
 
+CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_init() {
     srand(getpid());
-    return load_user_db();
+    return SASL_OK;
 }
 
+CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
                             const char* mech) {
+    cbsasl_error_t err;
 
     if (*conn != NULL) {
         cbsasl_dispose(conn);
     }
 
-    *conn = (cbsasl_conn_t*)malloc(sizeof(cbsasl_conn_t));
+    *conn = calloc(1, sizeof(cbsasl_conn_t));
     if (*conn == NULL) {
         return SASL_NOMEM;
     }
-
-    (*conn)->username = NULL;
-    (*conn)->config = NULL;
-    (*conn)->sasl_data = NULL;
-    (*conn)->sasl_data_len = 0;
 
     if (IS_MECH(mech, MECH_NAME_PLAIN) == 0) {
         cbsasl_mechs_t plain_mech = get_plain_mechs();
@@ -67,7 +60,6 @@ cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
         return SASL_BADPARAM;
     }
 
-    cbsasl_error_t err;
     if ((err = (*conn)->mech.init()) != SASL_OK) {
         return err;
     }
@@ -75,6 +67,7 @@ cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
     return (*conn)->mech.start(*conn);
 }
 
+CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
                            const char* input,
                            unsigned inputlen,
@@ -83,18 +76,31 @@ cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
     return conn->mech.step(conn, input, inputlen, output, outputlen);
 }
 
+CBSASL_PUBLIC_API
 void cbsasl_dispose(cbsasl_conn_t **conn) {
     if (*conn != NULL) {
-        if ((*conn)->username != NULL) {
-            free((*conn)->username);
-        }
-	if ((*conn)->config != NULL) {
-	    free((*conn)->config);
-	}
-        if ((*conn)->sasl_data != NULL) {
-            free((*conn)->sasl_data);
-        }
+        free((*conn)->username);
+        free((*conn)->config);
+        free((*conn)->sasl_data);
         free(*conn);
         *conn = NULL;
     }
+}
+
+CBSASL_PUBLIC_API
+const char* cbsasl_conn_get_user(cbsasl_conn_t *conn) {
+    return conn->username;
+}
+
+CBSASL_PUBLIC_API
+const char* cbsasl_conn_get_config(cbsasl_conn_t *conn) {
+    return conn->config;
+}
+
+CBSASL_PUBLIC_API
+const void* cbsasl_conn_get_data(cbsasl_conn_t *conn, unsigned int *datalen) {
+    if (datalen) {
+        *datalen = conn->sasl_data_len;
+    }
+    return conn->sasl_data;
 }
