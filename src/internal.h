@@ -34,4 +34,8 @@ struct cbsasl_conn_t {
     cbsasl_mechs_t mech;
 };
 
+/* Compare a user inputted string with a secret string, without
+   revealing the secret one. */
+int cbsasl_secure_compare(const char *a, const char* b, size_t len);
+
 #endif /* SRC_INTERNAL_H */

@@ -104,3 +104,12 @@ const void* cbsasl_conn_get_data(cbsasl_conn_t *conn, unsigned int *datalen) {
     }
     return conn->sasl_data;
 }
+
+int cbsasl_secure_compare(const char *a, const char* b, size_t len) {
+    size_t i;
+    int acc = 0;
+    for(i = 0; i < len; i++) {
+        acc |= a[i] ^ b[i];
+    }
+    return acc;
+}

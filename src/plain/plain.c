@@ -56,7 +56,11 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
             return SASL_FAIL;
         }
 
-        if (memcmp(password, passwd, strlen(passwd)) != 0) {
+        if (pwlen != strlen(passwd)) {
+            return SASL_FAIL;
+        }
+
+        if (cbsasl_secure_compare(password, passwd, pwlen) != 0) {
             return SASL_FAIL;
         }
         conn->username = strdup(username);
