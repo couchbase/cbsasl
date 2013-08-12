@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: nil -*- */
 /*
  *     Copyright 2013 Couchbase, Inc.
  *
@@ -13,31 +14,30 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+#ifndef CBSASL_VISIBILITY_H
+#define CBSASL_VISIBILITY_H 1
 
-#ifndef SRC_CONFIG_STATIC_H_
-#define SRC_CONFIG_STATIC_H_ 1
+#ifdef BUILDING_CBSASL
 
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <assert.h>
-
-#ifdef HAVE_PTHREAD_H
-#include <pthread.h>
+#if defined (__SUNPRO_C) && (__SUNPRO_C >= 0x550)
+#define CBSASL_PUBLIC_API __global
+#elif defined __GNUC__
+#define CBSASL_PUBLIC_API __attribute__ ((visibility("default")))
+#elif defined(_MSC_VER)
+#define CBSASL_PUBLIC_API extern __declspec(dllexport)
+#else
+/* unknown compiler */
+#define CBSASL_PUBLIC_API
 #endif
 
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
+#else
+
+#if defined(_MSC_VER)
+#define CBSASL_PUBLIC_API extern __declspec(dllimport)
+#else
+#define CBSASL_PUBLIC_API
 #endif
 
-#ifdef HAVE_SYS_STATS_H
-#include <sys/stats.h>
 #endif
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-#endif /* SRC_CONFIG_STATIC_H_ */
+#endif /* CBSASL_VISIBILITY_H */

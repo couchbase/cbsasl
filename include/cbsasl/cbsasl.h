@@ -17,6 +17,12 @@
 #ifndef INCLUDE_CBSASL_CBSASL_H_
 #define INCLUDE_CBSASL_CBSASL_H_ 1
 
+#include <cbsasl/visibility.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum cbsasl_error {
     SASL_OK,
     SASL_CONTINUE,
@@ -33,20 +39,37 @@ typedef cbsasl_error_t (*cbsasl_start_fn)(cbsasl_conn_t*);
 typedef cbsasl_error_t (*cbsasl_step_fn)(cbsasl_conn_t*, const char*,
                                          unsigned, const char**, unsigned*);
 
-typedef struct cbsasl_mechs {
-    const char* name;
-    cbsasl_init_fn init;
-    cbsasl_start_fn start;
-    cbsasl_step_fn step;
-} cbsasl_mechs_t;
+/**
+ * Get the username connected to a conn structure
+ *
+ * @param conn the connection structure to query
+ *
+ * @return the username assigned to the conn structure
+ */
+CBSASL_PUBLIC_API
+const char* cbsasl_conn_get_user(cbsasl_conn_t *conn);
 
-struct cbsasl_conn_t {
-    char* username;
-    char* config;
-    char* sasl_data;
-    unsigned sasl_data_len;
-    cbsasl_mechs_t mech;
-};
+/**
+ * Get the configuration associated with a conn structure
+ *
+ * @param conn the connection structure to query
+ *
+ * @return the configuration associated to the conn structure
+ */
+CBSASL_PUBLIC_API
+const char* cbsasl_conn_get_config(cbsasl_conn_t *conn);
+
+/**
+ * Get the data associated with a conn structure
+ *
+ * @param conn the connection structure to query
+ * @param datalen the length of the data (out)
+ *
+ * @return the data associated to the conn structure
+ */
+CBSASL_PUBLIC_API
+const void* cbsasl_conn_get_data(cbsasl_conn_t *conn, unsigned int *datalen);
+
 
 /**
  * Lists all of the mechanisms this sasl server supports
@@ -56,8 +79,8 @@ struct cbsasl_conn_t {
  *
  * @return Whether or not an error occured while getting the mechanism list
  */
-cbsasl_error_t cbsasl_list_mechs(const char **mechs,
-                                 unsigned *mechslen);
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_list_mechs(const char **mechs, unsigned *mechslen);
 
 /**
  * Initializes the sasl server
@@ -67,11 +90,12 @@ cbsasl_error_t cbsasl_list_mechs(const char **mechs,
  *
  * @return Whether or not the sasl server initialization was successful
  */
+CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_init();
 
 /**
  * Creates a sasl connection and begins authentication
- * 
+ *
  * When a client receives a request for sasl authentication this function is
  * called in order to initialize the sasl connection based on the mechanism
  * specified.
@@ -81,8 +105,8 @@ cbsasl_error_t cbsasl_init();
  *
  * @return Whether or not the mecahnism initialization was successful
  */
-cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
-                            const char* mechanism);
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn, const char* mechanism);
 
 /**
  * Does username/password authentication
@@ -92,6 +116,7 @@ cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
  *
  * @return Whether or not the sasl step was successful
  */
+CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
                            const char* input,
                            unsigned inputlen,
@@ -103,6 +128,45 @@ cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
  *
  * @param conn The sasl connection to free
  */
+CBSASL_PUBLIC_API
 void cbsasl_dispose(cbsasl_conn_t **pconn);
 
-#endif  // INCLUDE_CBSASL_CBSASL_H_
+
+/* The following methods is used for password maintenance on the server */
+
+/**
+ * Add or update the username/password combination
+ *
+ * @param username the name of the user (must be terminated with \0)
+ * @param password the password for the user (must be terminated with \0);
+ * @param config an opaque string stored with the user (must be
+ *               terminated with \0)
+ *
+ * @return SASL_OK for success
+ */
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_update_cred(const char *username,
+                                  const char *password,
+                                  const char *config);
+
+/**
+ * Delete a user.
+ *
+ * @param username the name of the user (must be terminated with \0)
+ *
+ * @return SASL_OK for success
+ */
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_remove_cred(const char *username);
+
+/**
+ * Destroy all credentials
+ */
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_destroy_creds(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  /* INCLUDE_CBSASL_CBSASL_H_ */

@@ -13,8 +13,8 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
+#include "internal.h"
 
-#include "config.h"
 #include "hmac.h"
 #include "md5.h"
 
@@ -31,6 +31,7 @@ void hmac_md5(unsigned char* text,
     unsigned char k_ipad[65];
     unsigned char k_opad[65];
     unsigned char tk[16];
+    int i;
 
     if (keylen > 64) {
         MD5_CTX ctx;
@@ -46,19 +47,18 @@ void hmac_md5(unsigned char* text,
     memcpy(k_ipad, key, keylen);
     memcpy(k_opad, key, keylen);
 
-    int i;
     for (i = 0; i < 64; i++) {
         k_ipad[i] ^= 0x36;
         k_opad[i] ^= 0x5c;
     }
 
-    // Perform inner md5
+    /* Perform inner md5 */
     MD5_Init(&context);
     MD5_Update(&context, k_ipad, 64);
     MD5_Update(&context, text, textlen);
     MD5_Final(digest, &context);
 
-    // Perform outer md5
+    /* Perform outer md5 */
     MD5_Init(&context);
     MD5_Update(&context, k_opad, 64);
     MD5_Update(&context, digest, 16);

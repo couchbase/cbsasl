@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.61])
 m4_include([m4/version.m4])
-AC_INIT([cbsasl], [VERSION_NUMBER], abhinav@couchbase.com)
+AC_INIT([cbsasl], [VERSION_NUMBER], support@couchbase.com)
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([src/cbsasl.c])
@@ -37,7 +37,7 @@ AH_TOP([
 
 AH_BOTTOM([
 #include "config_static.h"
-#endif  // SRC_CONFIG_H_
+#endif  /* SRC_CONFIG_H_ */
 ])
 
 # Checks for programs.
@@ -46,8 +46,7 @@ AC_PROG_CXX
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([assert.h ctype.h errno.h pthread.h stdarg.h stdbool.h \
-                  stdint.h stdio.h stdlib.h string.h])
+AC_CHECK_HEADERS([pthread.h stdint.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_UINT32_T

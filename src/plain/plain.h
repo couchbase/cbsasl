@@ -17,9 +17,6 @@
 #ifndef SRC_PLAIN_PLAIN_H_
 #define SRC_PLAIN_PLAIN_H_ 1
 
-#include "config.h"
-
-#include "cbsasl/cbsasl.h"
 #define MECH_NAME_PLAIN "PLAIN"
 
 cbsasl_error_t plain_server_init();
@@ -34,4 +31,4 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
 
 cbsasl_mechs_t get_plain_mechs(void);
 
-#endif  // SRC_PLAIN_PLAIN_H_
+#endif  /* SRC_PLAIN_PLAIN_H_ */

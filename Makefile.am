@@ -1,7 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
 lib_LTLIBRARIES = libcbsasl.la
-pkginclude_HEADERS = include/cbsasl/cbsasl.h
+pkginclude_HEADERS = include/cbsasl/cbsasl.h include/cbsasl/visibility.h
 
 libcbsasl_la_includedir = $(libdir)
 libcbsasl_la_SOURCES = include/cbsasl/cbsasl.h \
@@ -20,7 +20,7 @@ libcbsasl_la_SOURCES = include/cbsasl/cbsasl.h \
                         src/pwfile.c \
                         src/pwfile.h
 
-libcbsasl_la_CPPFLAGS = $(CPPFLAGS) -g -I$(top_srcdir)/include
+libcbsasl_la_CPPFLAGS = $(CPPFLAGS) -g -I$(top_srcdir)/include -DBUILDING_CBSASL
 libcbsasl_la_LDFLAGS = -R '$(pkglibdir)' -R '$(libdir)'
 
 check_PROGRAMS = hmac_test \
@@ -29,7 +29,7 @@ check_PROGRAMS = hmac_test \
 
 TESTS=${check_PROGRAMS}
 
-hmac_test_CPPFLAGS = $(CPPFLAGS)
+hmac_test_CPPFLAGS = $(CPPFLAGS) -I$(top_srcdir)/include
 hmac_test_SOURCES = t/hmac_test.c src/cram-md5/hmac.c src/cram-md5/md5.c
 hmac_test_DEPENDENCIES = src/cram-md5/hmac.h src/cram-md5/md5.h
 

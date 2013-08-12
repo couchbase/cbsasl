@@ -11,4 +11,4 @@ uint32_t hash(const void *key, size_t length, const uint32_t initval);
 }
 #endif
 
-#endif  // SRC_HASH_H_
+#endif  /* SRC_HASH_H_ */

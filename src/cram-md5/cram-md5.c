@@ -14,7 +14,8 @@
  *   limitations under the License.
  */
 
-#include "config.h"
+#include "internal.h"
+
 #include "cram-md5.h"
 #include "hmac.h"
 #include "pwfile.h"
@@ -64,36 +65,47 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
                                     unsigned inputlen,
                                     const char** output,
                                     unsigned* outputlen) {
+    unsigned int userlen;
+    char* user;
+    unsigned char digest[DIGEST_LENGTH];
+    char passwd[256];
+    char cfg[256];
+    int i;
+    char md5string[(DIGEST_LENGTH * 2) + 1]; /* sprintf adds \0 */
+
     if (inputlen <= 33) {
         return SASL_BADPARAM;
     }
 
-    unsigned userlen = inputlen - (DIGEST_LENGTH * 2) - 1;
-    char* user = (char*)calloc((userlen + 1) * sizeof(char), 1);
+    userlen = inputlen - (DIGEST_LENGTH * 2) - 1;
+    user = calloc((userlen + 1) * sizeof(char), 1);
     memcpy(user, input, userlen);
     user[userlen] = '\0';
 
-    char* cfg;
-    char* pass = find_pw(user, &cfg);
-    if (pass == NULL) {
+    if (find_pw(user, passwd, sizeof(passwd), cfg, sizeof(cfg)) == 0) {
         return SASL_FAIL;
     }
 
-    unsigned char digest[DIGEST_LENGTH];
-    hmac_md5(conn->sasl_data, conn->sasl_data_len, pass, strlen(pass), digest);
+    hmac_md5((unsigned char*)conn->sasl_data,
+             conn->sasl_data_len,
+             (unsigned char*)passwd,
+             strlen(passwd), digest);
 
-    int i;
-    char md5string[DIGEST_LENGTH * 2];
     for(i = 0; i < DIGEST_LENGTH; ++i) {
         sprintf(&md5string[i*2], "%02x", (unsigned int)digest[i]);
     }
 
-    if (memcmp(md5string, &(input[userlen + 1]), (DIGEST_LENGTH * 2)) != 0) {
+    if (cbsasl_secure_compare(md5string, &(input[userlen + 1]),
+                              (DIGEST_LENGTH * 2)) != 0) {
         return SASL_FAIL;
     }
 
     conn->username = user;
-    conn->config = strdup(cfg);
+    if (*cfg) {
+        conn->config = strdup(cfg);
+    } else {
+        conn->config = NULL;
+    }
     *output = NULL;
     *outputlen = 0;
     return SASL_OK;
