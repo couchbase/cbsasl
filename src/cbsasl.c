@@ -31,13 +31,11 @@ cbsasl_error_t cbsasl_list_mechs(const char **mechs,
     return SASL_OK;
 }
 
-CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_init() {
     srand(getpid());
     return load_user_db();
 }
 
-CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
                             const char* mech) {
     cbsasl_error_t err;
@@ -68,7 +66,6 @@ cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
     return (*conn)->mech.start(*conn);
 }
 
-CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
                            const char* input,
                            unsigned inputlen,
@@ -77,7 +74,6 @@ cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
     return conn->mech.step(conn, input, inputlen, output, outputlen);
 }
 
-CBSASL_PUBLIC_API
 void cbsasl_dispose(cbsasl_conn_t **conn) {
     if (*conn != NULL) {
         free((*conn)->username);

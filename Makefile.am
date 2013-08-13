@@ -20,7 +20,7 @@ libcbsasl_la_SOURCES = include/cbsasl/cbsasl.h \
                         src/pwfile.c \
                         src/pwfile.h
 
-libcbsasl_la_CPPFLAGS = $(CPPFLAGS) -g -I$(top_srcdir)/include -DBUILDING_CBSASL
+libcbsasl_la_CPPFLAGS = $(CPPFLAGS) -g -I$(top_srcdir)/include
 libcbsasl_la_LDFLAGS = -R '$(pkglibdir)' -R '$(libdir)'
 
 check_PROGRAMS = hmac_test \
