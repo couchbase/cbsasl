@@ -94,7 +94,8 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
 
     cbsasl_hex_encode(md5string, (char*) digest, DIGEST_LENGTH);
 
-    if (memcmp(md5string, &(input[userlen + 1]), (DIGEST_LENGTH * 2)) != 0) {
+    if (cbsasl_secure_compare(md5string, &(input[userlen + 1]),
+                              (DIGEST_LENGTH * 2)) != 0) {
         return SASL_FAIL;
     }
 

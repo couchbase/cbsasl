@@ -17,6 +17,7 @@
 #include "config.h"
 #include "plain.h"
 #include "pwfile.h"
+#include "util.h"
 
 cbsasl_error_t plain_server_init() {
     return SASL_OK;
@@ -57,10 +58,13 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
             if ((pwd = find_pw(username, &cfg)) == NULL) {
                 return SASL_FAIL;
             }
-
-            if (memcmp(password, pwd, strlen(pwd)) != 0) {
+            if (pwlen != strlen(pwd)) {
                 return SASL_FAIL;
             }
+            if (cbsasl_secure_compare(password, pwd, pwlen) != 0) {
+                return SASL_FAIL;
+            }
+
             conn->username = strdup(username);
             conn->config = strdup(cfg);
         }

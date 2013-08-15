@@ -87,6 +87,16 @@ void cbsasl_dispose(cbsasl_conn_t **conn) {
         *conn = NULL;
     }
 }
+
+int cbsasl_secure_compare(const char *a, const char* b, size_t len) {
+    size_t i;
+    int acc = 0;
+    for(i = 0; i < len; i++) {
+        acc |= a[i] ^ b[i];
+    }
+    return acc;
+}
+
 static const char *hexchar = "0123456789abcdef";
 void cbsasl_hex_encode(char *dest, const char* src, size_t srclen) {
     size_t i;
