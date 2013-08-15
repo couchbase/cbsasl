@@ -18,6 +18,7 @@
 #include "cram-md5.h"
 #include "hmac.h"
 #include "pwfile.h"
+#include "util.h"
 
 #define CHALLENGE_TEMPLATE "<xxxxxxxxxxxxxxxx.0@127.0.0.1>"
 #define CHALLENGE_LENGTH strlen(CHALLENGE_TEMPLATE)
@@ -91,9 +92,7 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
              (unsigned char*)pass,
              strlen(pass), digest);
 
-    for(i = 0; i < DIGEST_LENGTH; ++i) {
-        sprintf(&md5string[i*2], "%02x", (unsigned int)digest[i]);
-    }
+    cbsasl_hex_encode(md5string, (char*) digest, DIGEST_LENGTH);
 
     if (memcmp(md5string, &(input[userlen + 1]), (DIGEST_LENGTH * 2)) != 0) {
         return SASL_FAIL;

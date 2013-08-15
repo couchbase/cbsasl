@@ -87,3 +87,12 @@ void cbsasl_dispose(cbsasl_conn_t **conn) {
         *conn = NULL;
     }
 }
+static const char *hexchar = "0123456789abcdef";
+void cbsasl_hex_encode(char *dest, const char* src, size_t srclen) {
+    size_t i;
+    for(i = 0; i < srclen; i++) {
+        dest[i * 2] = hexchar[(src[i] >> 4) & 0xF];
+        dest[i * 2 + 1] = hexchar[src[i] & 0xF];
+    }
+}
+

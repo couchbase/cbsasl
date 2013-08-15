@@ -17,6 +17,7 @@
 #include "config.h"
 #include "cbsasl/cbsasl.h"
 #include "cram-md5/hmac.h"
+#include "util.h"
 
 const char* cbpwfile = "/tmp/sasl_server_test.pw";
 
@@ -44,18 +45,13 @@ static void construct_cram_md5_credentials(char* buffer,
                                            const char* challenge,
                                            unsigned challengelen) {
     int i;
-    char md5string[DIGEST_LENGTH * 2];
     unsigned char digest[DIGEST_LENGTH];
     memcpy(buffer, user, userlen);
     buffer[userlen + 1] = ' ';
 
     hmac_md5((unsigned char*)challenge, challengelen, (unsigned char*)pass, passlen, digest);
 
-    for(i = 0; i < DIGEST_LENGTH; ++i) {
-        sprintf(&md5string[i*2], "%02x", (unsigned int)digest[i]);
-    }
-
-    memcpy(buffer + userlen + 1, (char*)md5string, (DIGEST_LENGTH * 2));
+    cbsasl_hex_encode(buffer + userlen + 1, (char*) digest, DIGEST_LENGTH);
     *bufferlen = 1 + (DIGEST_LENGTH * 2) + userlen;
 }
 

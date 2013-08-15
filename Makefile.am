@@ -18,7 +18,8 @@ libcbsasl_la_SOURCES = include/cbsasl/cbsasl.h \
                         src/plain/plain.c \
                         src/plain/plain.h \
                         src/pwfile.c \
-                        src/pwfile.h
+                        src/pwfile.h \
+                        src/util.h
 
 libcbsasl_la_CPPFLAGS = $(CPPFLAGS) -g -I$(top_srcdir)/include -DBUILDING_CBSASL
 libcbsasl_la_LDFLAGS = -R '$(pkglibdir)' -R '$(libdir)'
