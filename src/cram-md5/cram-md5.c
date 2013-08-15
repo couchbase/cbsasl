@@ -41,16 +41,6 @@ static void challenge(char** challenge, unsigned* challengelen) {
     *challengelen = CHALLENGE_LENGTH;
 }
 
-static void print_md5(unsigned char* digest) {
-    int i;
-    char md5string[33];
-    printf("digest: ", digest);
-    for(i = 0; i < 16; ++i) {
-        sprintf(&md5string[i*2], "%02x", (unsigned int)digest[i]);
-    }
-    printf("%s\n", md5string);
-}
-
 cbsasl_error_t cram_md5_server_init() {
     return SASL_OK;
 }
