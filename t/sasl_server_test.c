@@ -17,6 +17,7 @@
 #include "config.h"
 #include "cbsasl/cbsasl.h"
 #include "cram-md5/hmac.h"
+#include "pwfile.h"
 #include "util.h"
 
 const char* cbpwfile = "/tmp/sasl_server_test.pw";
