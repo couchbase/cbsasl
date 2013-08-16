@@ -69,21 +69,74 @@ static void test_plain_auth() {
     cbsasl_conn_t* conn = NULL;
     const char* output = NULL;
     unsigned outputlen = 0;
+    cbsasl_error_t err;
 
-    cbsasl_error_t err = cbsasl_init();
+    err = cbsasl_init();
     assert(err == SASL_OK);
 
     err = cbsasl_start(&conn, "bad_mech");
     assert(err == SASL_BADPARAM);
+    free((void*)output);
 
+    /* Normal behavior */
+    output = NULL;
     err = cbsasl_start(&conn, "PLAIN");
     assert(err == SASL_CONTINUE);
 
     err = cbsasl_step(conn, "\0mikewied\0mikepw", 16, &output, &outputlen);
     assert(err == SASL_OK);
-    if (output != NULL) {
-        free((char*)output);
-    }
+    free((void*)output);
+
+    /* With wrong password */
+    output = NULL;
+    err = cbsasl_init();
+    assert(err == SASL_OK);
+
+    err = cbsasl_start(&conn, "PLAIN");
+    assert(err == SASL_CONTINUE);
+
+    err = cbsasl_step(conn, "\0mikewied\0badpPW", 16, &output, &outputlen);
+    assert(err == SASL_FAIL);
+    free((void*)output);
+
+    cbsasl_dispose(&conn);
+    assert(conn == NULL);
+
+    /* with authzid */
+    output = NULL;
+    err = cbsasl_init();
+    assert(err == SASL_OK);
+
+    err = cbsasl_start(&conn, "PLAIN");
+    assert(err == SASL_CONTINUE);
+
+    err = cbsasl_step(conn, "funzid\0mikewied\0mikepw", 22, &output, &outputlen);
+    assert(err == SASL_OK);
+    free((void*)output);
+
+    /* with no pw or username ending null */
+    output = NULL;
+    err = cbsasl_init();
+    assert(err == SASL_OK);
+
+    err = cbsasl_start(&conn, "PLAIN");
+    assert(err == SASL_CONTINUE);
+
+    err = cbsasl_step(conn, "funzid\0mikewied", 15, &output, &outputlen);
+    assert(err != SASL_OK);
+    free((void*)output);
+
+    /* with no nulls at all */
+    output = NULL;
+    err = cbsasl_init();
+    assert(err == SASL_OK);
+
+    err = cbsasl_start(&conn, "PLAIN");
+    assert(err == SASL_CONTINUE);
+
+    err = cbsasl_step(conn, "funzidmikewied", 14, &output, &outputlen);
+    assert(err != SASL_OK);
+    free((void*)output);
 
     cbsasl_dispose(&conn);
     assert(conn == NULL);

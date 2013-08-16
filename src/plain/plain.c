@@ -35,40 +35,54 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
                                  const char** output,
                                  unsigned* outputlen) {
 
-    while (inputlen > 0 && input[0] != '\0') {
-        /* Skip authzid */
-        input++;
-        inputlen--;
+    size_t inputpos = 0;
+    while (inputpos < inputlen && input[inputpos] != '\0') {
+        inputpos++;
     }
-    if (inputlen > 2 && inputlen < 128 && input[0] == '\0') {
-        const char *username = input + 1;
-        char password[256];
-        int pwlen = inputlen - 2 - strlen(username);
+    inputpos++;
 
-        if (pwlen < 0) {
+    if (inputpos >= inputlen) {
+        return SASL_BADPARAM;
+    }
+
+    {
+        char *cfg = NULL;
+        size_t pwlen = 0;
+        const char *username = input + inputpos;
+        const char *password;
+        char *stored_password;
+        while (inputpos < inputlen && input[inputpos] != '\0') {
+            inputpos++;
+        }
+        inputpos++;
+        if(inputpos >= inputlen) {
             return SASL_BADPARAM;
         }
-        if (pwlen < 256) {
-            char *cfg = NULL;
-            char* pwd;
-
-            password[pwlen] = '\0';
-            memcpy(password, input + 2 + strlen(username), pwlen);
-
-            if ((pwd = find_pw(username, &cfg)) == NULL) {
-                return SASL_FAIL;
-            }
-            if (pwlen != strlen(pwd)) {
-                return SASL_FAIL;
-            }
-            if (cbsasl_secure_compare(password, pwd, pwlen) != 0) {
-                return SASL_FAIL;
-            }
-
-            conn->username = strdup(username);
-            conn->config = strdup(cfg);
+        password = input + inputpos;
+        while (inputpos < inputlen) {
+            inputpos++;
+            pwlen++;
         }
+
+        if (pwlen == 0) {
+            return SASL_BADPARAM;
+        }
+
+        if ((stored_password = find_pw(username, &cfg)) == NULL) {
+            return SASL_FAIL;
+        }
+
+        if (pwlen != strlen(stored_password)) {
+            return SASL_FAIL;
+        }
+        if (cbsasl_secure_compare(password, stored_password, pwlen) != 0) {
+            return SASL_FAIL;
+        }
+
+        conn->username = strdup(username);
+        conn->config = strdup(cfg);
     }
+
     *output = NULL;
     *outputlen = 0;
     return SASL_OK;
