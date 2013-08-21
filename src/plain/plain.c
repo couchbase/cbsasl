@@ -59,7 +59,7 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
             return SASL_BADPARAM;
         }
         password = input + inputpos;
-        while (inputpos < inputlen) {
+        while (inputpos < inputlen && input[inputpos] != '\0') {
             inputpos++;
             pwlen++;
         }
