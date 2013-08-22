@@ -22,7 +22,7 @@
 
 #define MECH_NAME_CRAM_MD5 "CRAM-MD5"
 
-cbsasl_error_t cram_md5_server_init();
+cbsasl_error_t cram_md5_server_init(void);
 
 cbsasl_error_t cram_md5_server_start(cbsasl_conn_t* conn);
 

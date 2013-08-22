@@ -2,7 +2,7 @@
 #include "config.h"
 #include "pwfile.h"
 
-const char* cbpwfile = "/tmp/pwfile_test.pw";
+const char* cbpwfile = "pwfile_test.pw";
 
 const char* user1 = "mikewied";
 const char* pass1 = "mikepw";
@@ -18,7 +18,7 @@ static void create_pw_file() {
     fprintf(fp, "mikewied mikepw \ncseo seopw \njlim limpw \n");
     assert(fclose(fp) == 0);
 
-    putenv("ISASL_PWFILE=/tmp/pwfile_test.pw");
+    putenv("ISASL_PWFILE=pwfile_test.pw");
 }
 
 static void remove_pw_file() {
@@ -30,6 +30,7 @@ static void test_pwfile() {
     char* cfg;
     char* password;
 
+    pwfile_init();
     create_pw_file();
     assert(load_user_db() == SASL_OK);
     password = find_pw(user1, &cfg);

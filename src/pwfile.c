@@ -19,9 +19,15 @@
 #include "hash.h"
 #include "pwfile.h"
 
-static pthread_mutex_t uhash_lock = PTHREAD_MUTEX_INITIALIZER;
+#include <platform/platform.h>
+
+static cb_mutex_t uhash_lock;
 static user_db_entry_t **user_ht;
 static const int n_uht_buckets = 12289;
+
+void pwfile_init(void) {
+   cb_mutex_initialize(&uhash_lock);
+}
 
 static void kill_whitey(char *s) {
     int i;
@@ -31,7 +37,7 @@ static void kill_whitey(char *s) {
 }
 
 static int u_hash_key(const char *u) {
-    uint32_t h = hash(u, strlen(u), 0) % n_uht_buckets;
+    cbsasl_uint32_t h = hash(u, strlen(u), 0) % n_uht_buckets;
     assert(h < n_uht_buckets);
     return h;
 }
@@ -92,7 +98,7 @@ char *find_pw(const char *u, char **cfg) {
     assert(u);
     assert(user_ht);
 
-    pthread_mutex_lock(&uhash_lock);
+    cb_mutex_enter(&uhash_lock);
     h = u_hash_key(u);
 
     e = user_ht[h];
@@ -102,10 +108,10 @@ char *find_pw(const char *u, char **cfg) {
 
     if (e != NULL) {
         *cfg = e->config;
-        pthread_mutex_unlock(&uhash_lock);
+        cb_mutex_exit(&uhash_lock);
         return e->password;
     } else {
-        pthread_mutex_unlock(&uhash_lock);
+        cb_mutex_exit(&uhash_lock);
         return NULL;
     }
 }
@@ -115,6 +121,8 @@ cbsasl_error_t load_user_db(void) {
     FILE *sfile;
     char up[128];
     const char *filename = get_isasl_filename();
+
+
     if (!filename) {
         return SASL_OK;
     }
@@ -183,10 +191,10 @@ cbsasl_error_t load_user_db(void) {
      }
      */
     /* Replace the current configuration with the new one */
-    pthread_mutex_lock(&uhash_lock);
+    cb_mutex_enter(&uhash_lock);
     free_user_ht();
     user_ht = new_ut;
-    pthread_mutex_unlock(&uhash_lock);
+    cb_mutex_exit(&uhash_lock);
 
     return SASL_OK;
 }

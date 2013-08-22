@@ -60,7 +60,6 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
     char* cfg;
     char* pass;
     unsigned char digest[DIGEST_LENGTH];
-    int i;
     char md5string[DIGEST_LENGTH * 2];
 
     if (inputlen <= 33) {

@@ -14,24 +14,27 @@
  *   limitations under the License.
  */
 
-#ifndef SRC_PLAIN_PLAIN_H_
-#define SRC_PLAIN_PLAIN_H_ 1
+#ifndef SRC_CONFIG_H
+#define SRC_CONFIG_H 1
 
-#include "config.h"
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <assert.h>
 
-#include "cbsasl/cbsasl.h"
-#define MECH_NAME_PLAIN "PLAIN"
+#ifdef _WIN32
+#include <windows.h>
+typedef unsigned __int8 cbsasl_uint8_t;
+typedef unsigned __int16 cbsasl_uint16_t;
+typedef unsigned __int32 cbsasl_uint32_t;
+#else
+#include <unistd.h>
+#include <stdint.h>
+typedef uint8_t cbsasl_uint8_t;
+typedef uint16_t cbsasl_uint16_t;
+typedef uint32_t cbsasl_uint32_t;
+#endif
 
-cbsasl_error_t plain_server_init(void);
-
-cbsasl_error_t plain_server_start(cbsasl_conn_t *conn);
-
-cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
-                                 const char* input,
-                                 unsigned inputlen,
-                                 const char** output,
-                                 unsigned* outputlen);
-
-cbsasl_mechs_t get_plain_mechs(void);
-
-#endif  /* SRC_PLAIN_PLAIN_H_ */
+#endif /* SRC_CONFIG_H */

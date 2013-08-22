@@ -20,7 +20,7 @@
 #include "pwfile.h"
 #include "util.h"
 
-const char* cbpwfile = "/tmp/sasl_server_test.pw";
+const char* cbpwfile = "sasl_server_test.pw";
 
 static void create_pw_file() {
     FILE *fp = fopen(cbpwfile, "w");
@@ -29,7 +29,7 @@ static void create_pw_file() {
     fprintf(fp, "mikewied mikepw \ncseo cpw \njlim jpw \nnopass\n");
     assert(fclose(fp) == 0);
 
-    putenv("ISASL_PWFILE=/tmp/sasl_server_test.pw");
+    putenv("ISASL_PWFILE=sasl_server_test.pw");
 }
 
 static void remove_pw_file() {
@@ -45,7 +45,6 @@ static void construct_cram_md5_credentials(char* buffer,
                                            unsigned passlen,
                                            const char* challenge,
                                            unsigned challengelen) {
-    int i;
     unsigned char digest[DIGEST_LENGTH];
     memcpy(buffer, user, userlen);
     buffer[userlen + 1] = ' ';

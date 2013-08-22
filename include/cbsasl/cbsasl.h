@@ -71,7 +71,7 @@ cbsasl_error_t cbsasl_list_mechs(const char **mechs,
  * @return Whether or not the sasl server initialization was successful
  */
 CBSASL_PUBLIC_API
-cbsasl_error_t cbsasl_init();
+cbsasl_error_t cbsasl_init(void);
 
 /**
  * Creates a sasl connection and begins authentication

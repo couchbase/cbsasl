@@ -20,6 +20,7 @@
 #include "cram-md5/cram-md5.h"
 #include "plain/plain.h"
 #include "pwfile.h"
+#include "util.h"
 #include <time.h>
 
 #define IS_MECH(str, mech) (strncmp(str, mech, strlen(mech)))
@@ -34,6 +35,7 @@ cbsasl_error_t cbsasl_list_mechs(const char **mechs,
 CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_init() {
     srand(getpid());
+    pwfile_init();
     return load_user_db();
 }
 
@@ -105,4 +107,3 @@ void cbsasl_hex_encode(char *dest, const char* src, size_t srclen) {
         dest[i * 2 + 1] = hexchar[src[i] & 0xF];
     }
 }
-
