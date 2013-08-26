@@ -26,7 +26,7 @@ static void create_pw_file() {
     FILE *fp = fopen(cbpwfile, "w");
     assert(fp != NULL);
 
-    fprintf(fp, "mikewied mikepw \ncseo cpw \njlim jpw \n");
+    fprintf(fp, "mikewied mikepw \ncseo cpw \njlim jpw \nnopass\n");
     assert(fclose(fp) == 0);
 
     putenv("ISASL_PWFILE=/tmp/sasl_server_test.pw");
@@ -101,6 +101,18 @@ static void test_plain_auth() {
 
     cbsasl_dispose(&conn);
     assert(conn == NULL);
+
+    /* with no password */
+    output = NULL;
+    err = cbsasl_init();
+    assert(err == SASL_OK);
+
+    err = cbsasl_start(&conn, "PLAIN");
+    assert(err == SASL_CONTINUE);
+
+    err = cbsasl_step(conn, "\0nopass\0", 8, &output, &outputlen);
+    assert(err == SASL_OK);
+    free((void*)output);
 
     /* with authzid */
     output = NULL;
