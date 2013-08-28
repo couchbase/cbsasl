@@ -58,9 +58,7 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
 
         if(inputpos > inputlen) {
             return SASL_BADPARAM;
-        } else if (inputpos == inputlen) {
-            password == NULL;
-        } else {
+        } else if (inputpos != inputlen) {
             password = input + inputpos;
             while (inputpos < inputlen && input[inputpos] != '\0') {
                 inputpos++;
