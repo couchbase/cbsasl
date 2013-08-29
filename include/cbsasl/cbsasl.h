@@ -112,4 +112,13 @@ cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
 CBSASL_PUBLIC_API
 void cbsasl_dispose(cbsasl_conn_t **pconn);
 
+/**
+ * Refresh the internal data (this may result in loading password
+ * databases etc)
+ *
+ * @return Whether or not the operation was successful
+ */
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_refresh(void);
+
 #endif  /* INCLUDE_CBSASL_CBSASL_H_ */

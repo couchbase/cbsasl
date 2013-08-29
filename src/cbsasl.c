@@ -107,3 +107,8 @@ void cbsasl_hex_encode(char *dest, const char* src, size_t srclen) {
         dest[i * 2 + 1] = hexchar[src[i] & 0xF];
     }
 }
+
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_refresh(void) {
+    return load_user_db();
+}
