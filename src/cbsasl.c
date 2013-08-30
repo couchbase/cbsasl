@@ -74,6 +74,9 @@ cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
                            unsigned inputlen,
                            const char** output,
                            unsigned* outputlen) {
+    if (!conn) {
+        return SASL_FAIL;
+    }
     return conn->mech.step(conn, input, inputlen, output, outputlen);
 }
 
