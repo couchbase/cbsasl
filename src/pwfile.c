@@ -25,28 +25,33 @@ static cb_mutex_t uhash_lock;
 static user_db_entry_t **user_ht;
 static const int n_uht_buckets = 12289;
 
-void pwfile_init(void) {
-   cb_mutex_initialize(&uhash_lock);
+void pwfile_init(void)
+{
+    cb_mutex_initialize(&uhash_lock);
 }
 
-static void kill_whitey(char *s) {
+static void kill_whitey(char *s)
+{
     int i;
     for (i = strlen(s) - 1; i > 0 && isspace(s[i]); i--) {
         s[i] = '\0';
     }
 }
 
-static int u_hash_key(const char *u) {
+static int u_hash_key(const char *u)
+{
     cbsasl_uint32_t h = hash(u, strlen(u), 0) % n_uht_buckets;
     assert(h < n_uht_buckets);
     return h;
 }
 
-static const char *get_isasl_filename(void) {
+static const char *get_isasl_filename(void)
+{
     return getenv("ISASL_PWFILE");
 }
 
-void free_user_ht(void) {
+void free_user_ht(void)
+{
     if (user_ht) {
         int i;
         for (i = 0; i < n_uht_buckets; i++) {
@@ -68,7 +73,8 @@ void free_user_ht(void) {
 static void store_pw(user_db_entry_t **ht,
                      const char *u,
                      const char *p,
-                     const char *cfg) {
+                     const char *cfg)
+{
     user_db_entry_t *e;
     int h;
 
@@ -91,7 +97,8 @@ static void store_pw(user_db_entry_t **ht,
     ht[h] = e;
 }
 
-char *find_pw(const char *u, char **cfg) {
+char *find_pw(const char *u, char **cfg)
+{
     int h;
     user_db_entry_t *e;
 
@@ -116,7 +123,8 @@ char *find_pw(const char *u, char **cfg) {
     }
 }
 
-cbsasl_error_t load_user_db(void) {
+cbsasl_error_t load_user_db(void)
+{
     user_db_entry_t **new_ut;
     FILE *sfile;
     char up[128];
@@ -132,7 +140,7 @@ cbsasl_error_t load_user_db(void) {
         return SASL_FAIL;
     }
 
-    new_ut = calloc(n_uht_buckets, sizeof(user_db_entry_t*));
+    new_ut = calloc(n_uht_buckets, sizeof(user_db_entry_t *));
 
     if (!new_ut) {
         fclose(sfile);

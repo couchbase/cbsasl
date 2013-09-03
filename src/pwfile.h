@@ -27,7 +27,7 @@ typedef struct user_db_entry {
     struct user_db_entry *next;
 } user_db_entry_t;
 
-char* find_pw(const char *u, char **cfg);
+char *find_pw(const char *u, char **cfg);
 
 cbsasl_error_t load_user_db(void);
 

@@ -31,21 +31,21 @@ typedef enum cbsasl_error {
 typedef struct cbsasl_conn_t cbsasl_conn_t;
 
 typedef cbsasl_error_t (*cbsasl_init_fn)();
-typedef cbsasl_error_t (*cbsasl_start_fn)(cbsasl_conn_t*);
-typedef cbsasl_error_t (*cbsasl_step_fn)(cbsasl_conn_t*, const char*,
-                                         unsigned, const char**, unsigned*);
+typedef cbsasl_error_t (*cbsasl_start_fn)(cbsasl_conn_t *);
+typedef cbsasl_error_t (*cbsasl_step_fn)(cbsasl_conn_t *, const char *,
+                                         unsigned, const char **, unsigned *);
 
 typedef struct cbsasl_mechs {
-    const char* name;
+    const char *name;
     cbsasl_init_fn init;
     cbsasl_start_fn start;
     cbsasl_step_fn step;
 } cbsasl_mechs_t;
 
 struct cbsasl_conn_t {
-    char* username;
-    char* config;
-    char* sasl_data;
+    char *username;
+    char *config;
+    char *sasl_data;
     unsigned sasl_data_len;
     cbsasl_mechs_t mech;
 };
@@ -87,7 +87,7 @@ cbsasl_error_t cbsasl_init(void);
  */
 CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
-                            const char* mechanism);
+                            const char *mechanism);
 
 /**
  * Does username/password authentication
@@ -99,10 +99,10 @@ cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
  */
 CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
-                           const char* input,
+                           const char *input,
                            unsigned inputlen,
-                           const char** output,
-                           unsigned* outputlen);
+                           const char **output,
+                           unsigned *outputlen);
 
 /**
  * Frees up funushed sasl connections

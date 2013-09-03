@@ -22,11 +22,12 @@
  * The code in this function is based on the code provided in rfc 2104.
  * http://www.ietf.org/rfc/rfc2104.txt
  */
-void hmac_md5(unsigned char* text,
+void hmac_md5(unsigned char *text,
               int textlen,
-              unsigned char* key,
+              unsigned char *key,
               int keylen,
-              unsigned char* digest) {
+              unsigned char *digest)
+{
     MD5_CTX context;
     unsigned char k_ipad[65];
     unsigned char k_opad[65];

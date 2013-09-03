@@ -25,40 +25,45 @@
 #define NONCE_LENGTH 16
 #define NONCE_SWAPS 100
 
-static void generate_nonce(char* nonce) {
+static void generate_nonce(char *nonce)
+{
     int i;
     for (i = 0; i < NONCE_LENGTH; i++) {
         nonce[i] = '0' + (rand() % 10);
     }
 }
 
-static void challenge(char** challenge, unsigned* challengelen) {
+static void challenge(char **challenge, unsigned *challengelen)
+{
     char nonce[NONCE_LENGTH];
     generate_nonce(nonce);
-    *challenge = (char*)malloc(CHALLENGE_LENGTH * sizeof(char));
-    memcpy((void*)((*challenge)), CHALLENGE_TEMPLATE, CHALLENGE_LENGTH);
-    memcpy((void*)((*challenge) + 1), nonce, NONCE_LENGTH);
+    *challenge = (char *)malloc(CHALLENGE_LENGTH * sizeof(char));
+    memcpy((void *)((*challenge)), CHALLENGE_TEMPLATE, CHALLENGE_LENGTH);
+    memcpy((void *)((*challenge) + 1), nonce, NONCE_LENGTH);
     *challengelen = CHALLENGE_LENGTH;
 }
 
-cbsasl_error_t cram_md5_server_init() {
+cbsasl_error_t cram_md5_server_init()
+{
     return SASL_OK;
 }
 
-cbsasl_error_t cram_md5_server_start(cbsasl_conn_t* conn) {
+cbsasl_error_t cram_md5_server_start(cbsasl_conn_t *conn)
+{
     challenge(&(conn->sasl_data), &(conn->sasl_data_len));
     return SASL_CONTINUE;
 }
 
 cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
-                                    const char* input,
+                                    const char *input,
                                     unsigned inputlen,
-                                    const char** output,
-                                    unsigned* outputlen) {
+                                    const char **output,
+                                    unsigned *outputlen)
+{
     unsigned int userlen;
-    char* user;
-    char* cfg;
-    char* pass;
+    char *user;
+    char *cfg;
+    char *pass;
     unsigned char digest[DIGEST_LENGTH];
     char md5string[DIGEST_LENGTH * 2];
 
@@ -76,12 +81,12 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
         return SASL_FAIL;
     }
 
-    hmac_md5((unsigned char*)conn->sasl_data,
+    hmac_md5((unsigned char *)conn->sasl_data,
              conn->sasl_data_len,
-             (unsigned char*)pass,
+             (unsigned char *)pass,
              strlen(pass), digest);
 
-    cbsasl_hex_encode(md5string, (char*) digest, DIGEST_LENGTH);
+    cbsasl_hex_encode(md5string, (char *) digest, DIGEST_LENGTH);
 
     if (cbsasl_secure_compare(md5string, &(input[userlen + 1]),
                               (DIGEST_LENGTH * 2)) != 0) {
@@ -95,7 +100,8 @@ cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
     return SASL_OK;
 }
 
-cbsasl_mechs_t get_cram_md5_mechs(void) {
+cbsasl_mechs_t get_cram_md5_mechs(void)
+{
     static cbsasl_mechs_t mechs = {
         MECH_NAME_CRAM_MD5,
         cram_md5_server_init,

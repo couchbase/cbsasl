@@ -2,16 +2,17 @@
 #include "config.h"
 #include "pwfile.h"
 
-const char* cbpwfile = "pwfile_test.pw";
+const char *cbpwfile = "pwfile_test.pw";
 
-const char* user1 = "mikewied";
-const char* pass1 = "mikepw";
-const char* user2 = "cseo";
-const char* pass2 = "seopw";
-const char* user3 = "jlim";
-const char* pass3 = "limpw";
+const char *user1 = "mikewied";
+const char *pass1 = "mikepw";
+const char *user2 = "cseo";
+const char *pass2 = "seopw";
+const char *user3 = "jlim";
+const char *pass3 = "limpw";
 
-static void create_pw_file() {
+static void create_pw_file()
+{
     FILE *fp = fopen(cbpwfile, "w");
     assert(fp != NULL);
 
@@ -21,14 +22,16 @@ static void create_pw_file() {
     putenv("ISASL_PWFILE=pwfile_test.pw");
 }
 
-static void remove_pw_file() {
+static void remove_pw_file()
+{
     assert(remove(cbpwfile) == 0);
     free_user_ht();
 }
 
-static void test_pwfile() {
-    char* cfg;
-    char* password;
+static void test_pwfile()
+{
+    char *cfg;
+    char *password;
 
     pwfile_init();
     create_pw_file();
@@ -45,7 +48,8 @@ static void test_pwfile() {
     remove_pw_file();
 }
 
-int main() {
+int main()
+{
     test_pwfile();
     return 0;
 }

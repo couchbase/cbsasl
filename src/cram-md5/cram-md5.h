@@ -24,13 +24,13 @@
 
 cbsasl_error_t cram_md5_server_init(void);
 
-cbsasl_error_t cram_md5_server_start(cbsasl_conn_t* conn);
+cbsasl_error_t cram_md5_server_start(cbsasl_conn_t *conn);
 
-cbsasl_error_t cram_md5_server_step(cbsasl_conn_t* conn,
-                                    const char* input,
+cbsasl_error_t cram_md5_server_step(cbsasl_conn_t *conn,
+                                    const char *input,
                                     unsigned inputlen,
-                                    const char** output,
-                                    unsigned* outputlen);
+                                    const char **output,
+                                    unsigned *outputlen);
 
 cbsasl_mechs_t get_cram_md5_mechs(void);
 

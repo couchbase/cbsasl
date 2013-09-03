@@ -20,9 +20,10 @@
 #include "pwfile.h"
 #include "util.h"
 
-const char* cbpwfile = "sasl_server_test.pw";
+const char *cbpwfile = "sasl_server_test.pw";
 
-static void create_pw_file() {
+static void create_pw_file()
+{
     FILE *fp = fopen(cbpwfile, "w");
     assert(fp != NULL);
 
@@ -32,31 +33,34 @@ static void create_pw_file() {
     putenv("ISASL_PWFILE=sasl_server_test.pw");
 }
 
-static void remove_pw_file() {
+static void remove_pw_file()
+{
     assert(remove(cbpwfile) == 0);
     free_user_ht();
 }
 
-static void construct_cram_md5_credentials(char* buffer,
-                                           unsigned* bufferlen,
-                                           const char* user,
+static void construct_cram_md5_credentials(char *buffer,
+                                           unsigned *bufferlen,
+                                           const char *user,
                                            unsigned userlen,
-                                           const char* pass,
+                                           const char *pass,
                                            unsigned passlen,
-                                           const char* challenge,
-                                           unsigned challengelen) {
+                                           const char *challenge,
+                                           unsigned challengelen)
+{
     unsigned char digest[DIGEST_LENGTH];
     memcpy(buffer, user, userlen);
     buffer[userlen + 1] = ' ';
 
-    hmac_md5((unsigned char*)challenge, challengelen, (unsigned char*)pass, passlen, digest);
+    hmac_md5((unsigned char *)challenge, challengelen, (unsigned char *)pass, passlen, digest);
 
-    cbsasl_hex_encode(buffer + userlen + 1, (char*) digest, DIGEST_LENGTH);
+    cbsasl_hex_encode(buffer + userlen + 1, (char *) digest, DIGEST_LENGTH);
     *bufferlen = 1 + (DIGEST_LENGTH * 2) + userlen;
 }
 
-static void test_list_mechs() {
-    const char* mechs = NULL;
+static void test_list_mechs()
+{
+    const char *mechs = NULL;
     unsigned len = 0;
     cbsasl_error_t err = cbsasl_list_mechs(&mechs, &len);
     assert(err == SASL_OK);
@@ -64,9 +68,10 @@ static void test_list_mechs() {
     assert(strncmp(mechs, "CRDM-MD5 PLAIN", len) != 0);
 }
 
-static void test_plain_auth() {
-    cbsasl_conn_t* conn = NULL;
-    const char* output = NULL;
+static void test_plain_auth()
+{
+    cbsasl_conn_t *conn = NULL;
+    const char *output = NULL;
     unsigned outputlen = 0;
     cbsasl_error_t err;
 
@@ -75,7 +80,7 @@ static void test_plain_auth() {
 
     err = cbsasl_start(&conn, "bad_mech");
     assert(err == SASL_BADPARAM);
-    free((void*)output);
+    free((void *)output);
 
     /* Normal behavior */
     output = NULL;
@@ -84,7 +89,7 @@ static void test_plain_auth() {
 
     err = cbsasl_step(conn, "\0mikewied\0mikepw", 16, &output, &outputlen);
     assert(err == SASL_OK);
-    free((void*)output);
+    free((void *)output);
 
     /* With wrong password */
     output = NULL;
@@ -96,7 +101,7 @@ static void test_plain_auth() {
 
     err = cbsasl_step(conn, "\0mikewied\0badpPW", 16, &output, &outputlen);
     assert(err == SASL_FAIL);
-    free((void*)output);
+    free((void *)output);
 
     cbsasl_dispose(&conn);
     assert(conn == NULL);
@@ -111,7 +116,7 @@ static void test_plain_auth() {
 
     err = cbsasl_step(conn, "\0nopass\0", 8, &output, &outputlen);
     assert(err == SASL_OK);
-    free((void*)output);
+    free((void *)output);
 
     /* with authzid */
     output = NULL;
@@ -123,7 +128,7 @@ static void test_plain_auth() {
 
     err = cbsasl_step(conn, "funzid\0mikewied\0mikepw", 22, &output, &outputlen);
     assert(err == SASL_OK);
-    free((void*)output);
+    free((void *)output);
 
     /* with no pw or username ending null */
     output = NULL;
@@ -135,7 +140,7 @@ static void test_plain_auth() {
 
     err = cbsasl_step(conn, "funzid\0mikewied", 15, &output, &outputlen);
     assert(err != SASL_OK);
-    free((void*)output);
+    free((void *)output);
 
     /* with no nulls at all */
     output = NULL;
@@ -147,19 +152,20 @@ static void test_plain_auth() {
 
     err = cbsasl_step(conn, "funzidmikewied", 14, &output, &outputlen);
     assert(err != SASL_OK);
-    free((void*)output);
+    free((void *)output);
 
     cbsasl_dispose(&conn);
     assert(conn == NULL);
 }
 
-static void test_cram_md5_auth() {
-    const char* user = "mikewied";
-    const char* pass = "mikepw";
-    cbsasl_conn_t* conn = NULL;
+static void test_cram_md5_auth()
+{
+    const char *user = "mikewied";
+    const char *pass = "mikepw";
+    cbsasl_conn_t *conn = NULL;
     char creds[128];
     unsigned credslen = 0;
-    const char* output = NULL;
+    const char *output = NULL;
     unsigned outputlen = 0;
 
     cbsasl_error_t err = cbsasl_init();
@@ -176,14 +182,15 @@ static void test_cram_md5_auth() {
     err = cbsasl_step(conn, creds, credslen, &output, &outputlen);
     assert(err == SASL_OK);
     if (output != NULL) {
-        free((char*)output);
+        free((char *)output);
     }
 
     cbsasl_dispose(&conn);
     assert(conn == NULL);
 }
 
-int main() {
+int main()
+{
     create_pw_file();
 
     test_list_mechs();

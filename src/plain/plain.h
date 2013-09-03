@@ -27,10 +27,10 @@ cbsasl_error_t plain_server_init(void);
 cbsasl_error_t plain_server_start(cbsasl_conn_t *conn);
 
 cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
-                                 const char* input,
+                                 const char *input,
                                  unsigned inputlen,
-                                 const char** output,
-                                 unsigned* outputlen);
+                                 const char **output,
+                                 unsigned *outputlen);
 
 cbsasl_mechs_t get_plain_mechs(void);
 

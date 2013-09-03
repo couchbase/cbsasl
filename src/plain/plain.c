@@ -19,21 +19,24 @@
 #include "pwfile.h"
 #include "util.h"
 
-cbsasl_error_t plain_server_init() {
+cbsasl_error_t plain_server_init()
+{
     return SASL_OK;
 }
 
-cbsasl_error_t plain_server_start(cbsasl_conn_t* conn) {
+cbsasl_error_t plain_server_start(cbsasl_conn_t *conn)
+{
     conn->sasl_data = NULL;
     conn->sasl_data_len = 0;
     return SASL_CONTINUE;
 }
 
 cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
-                                 const char* input,
+                                 const char *input,
                                  unsigned inputlen,
-                                 const char** output,
-                                 unsigned* outputlen) {
+                                 const char **output,
+                                 unsigned *outputlen)
+{
 
     size_t inputpos = 0;
     while (inputpos < inputlen && input[inputpos] != '\0') {
@@ -56,7 +59,7 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
         }
         inputpos++;
 
-        if(inputpos > inputlen) {
+        if (inputpos > inputlen) {
             return SASL_BADPARAM;
         } else if (inputpos != inputlen) {
             password = input + inputpos;
@@ -86,7 +89,8 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
     return SASL_OK;
 }
 
-cbsasl_mechs_t get_plain_mechs(void) {
+cbsasl_mechs_t get_plain_mechs(void)
+{
     static cbsasl_mechs_t mechs = {
         MECH_NAME_PLAIN,
         plain_server_init,
