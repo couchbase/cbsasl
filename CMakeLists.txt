@@ -44,3 +44,7 @@ TARGET_LINK_LIBRARIES(sasl_test platform)
 ADD_TEST(hmac hmac_test)
 ADD_TEST(pwfile pwfile_test)
 ADD_TEST(sasl sasl_test)
+
+ADD_CUSTOM_TARGET(reformat-cbsasl-source
+                  COMMAND astyle ${ASTYLE_CFLAGS}
+                  VERBATIM)
