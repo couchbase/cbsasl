@@ -29,12 +29,25 @@ extern "C" {
         SASL_FAIL,
         SASL_NOMEM,
         SASL_BADPARAM,
+        SASL_NOMECH,
         SASL_NOUSER
     }
     cbsasl_error_t;
 
-    typedef struct cbsasl_conn_t cbsasl_conn_t;
+    typedef struct {
+        unsigned long len;
+        unsigned char data[1];
+    } cbsasl_secret_t;
 
+    typedef struct {
+        unsigned long id;
+        int (*proc)(void);
+        void *context;
+    } cbsasl_callback_t;
+
+    typedef struct cbsasl_conn_st cbsasl_conn_t;
+
+#ifdef BUILDING_CBSASL
     typedef cbsasl_error_t (*cbsasl_init_fn)();
     typedef cbsasl_error_t (*cbsasl_start_fn)(cbsasl_conn_t *);
     typedef cbsasl_error_t (*cbsasl_step_fn)(cbsasl_conn_t *, const char *,
@@ -47,13 +60,33 @@ extern "C" {
         cbsasl_step_fn step;
     } cbsasl_mechs_t;
 
-    struct cbsasl_conn_t {
+    struct cbsasl_client_conn_t {
+        char *userdata;
+        int plain;
+        int (*get_username)(void *context, int id, const char **result,
+                            unsigned int *len);
+        void *get_username_ctx;
+        int (*get_password)(cbsasl_conn_t *conn, void *context, int id,
+                            cbsasl_secret_t **psecret);
+        void *get_password_ctx;
+    };
+
+    struct cbsasl_server_conn_t {
         char *username;
         char *config;
         char *sasl_data;
-        unsigned sasl_data_len;
+        unsigned int sasl_data_len;
         cbsasl_mechs_t mech;
     };
+
+    struct cbsasl_conn_st {
+        int client;
+        union {
+            struct cbsasl_client_conn_t client;
+            struct cbsasl_server_conn_t server;
+        } c;
+    };
+#endif
 
     /**
      * Lists all of the mechanisms this sasl server supports
@@ -76,7 +109,7 @@ extern "C" {
      * @return Whether or not the sasl server initialization was successful
      */
     CBSASL_PUBLIC_API
-    cbsasl_error_t cbsasl_init(void);
+    cbsasl_error_t cbsasl_server_init(void);
 
     /**
      * Creates a sasl connection and begins authentication
@@ -92,7 +125,11 @@ extern "C" {
      */
     CBSASL_PUBLIC_API
     cbsasl_error_t cbsasl_server_start(cbsasl_conn_t **conn,
-                                       const char *mechanism);
+                                       const char *mech,
+                                       const char *clientin,
+                                       unsigned int clientinlen,
+                                       unsigned char **serverout,
+                                       unsigned int *serveroutlen);
 
     /**
      * Does username/password authentication
@@ -124,7 +161,7 @@ extern "C" {
      * @return Whether or not the operation was successful
      */
     CBSASL_PUBLIC_API
-    cbsasl_error_t cbsasl_refresh(void);
+    cbsasl_error_t cbsasl_server_refresh(void);
 
     typedef enum {
         CBSASL_USERNAME = 0,
@@ -140,6 +177,40 @@ extern "C" {
     cbsasl_error_t cbsasl_setprop(cbsasl_conn_t *conn,
                                   cbsasl_prop_t propnum,
                                   const void *pvalue);
+
+    /* Client API */
+
+
+    /* define the different callback id's we support */
+#define CBSASL_CB_USER 1
+#define CBSASL_CB_AUTHNAME 2
+#define CBSASL_CB_PASS 3
+#define CBSASL_CB_LIST_END 4
+
+    CBSASL_PUBLIC_API
+    cbsasl_error_t cbsasl_client_new(const char *service,
+                                     const char *serverFQDN,
+                                     const char *iplocalport,
+                                     const char *ipremoteport,
+                                     const cbsasl_callback_t *prompt_supp,
+                                     unsigned int flags,
+                                     cbsasl_conn_t **pconn);
+
+    CBSASL_PUBLIC_API
+    cbsasl_error_t cbsasl_client_start(cbsasl_conn_t *conn,
+                                       const char *mechlist,
+                                       void **prompt_need,
+                                       const char **clientout,
+                                       unsigned int *clientoutlen,
+                                       const char **mech);
+
+    CBSASL_PUBLIC_API
+    cbsasl_error_t cbsasl_client_step(cbsasl_conn_t *conn,
+                                      const char *serverin,
+                                      unsigned int serverinlen,
+                                      void **not_used,
+                                      const char **clientout,
+                                      unsigned int *clientoutlen);
 
 #ifdef __cplusplus
 }

@@ -37,6 +37,9 @@ ADD_EXECUTABLE(pwfile_test t/pwfile.c src/pwfile.c src/hash.c)
 ADD_EXECUTABLE(sasl_test t/sasl_server_test.c ${cbsasl_sources})
 SET_TARGET_PROPERTIES(sasl_test PROPERTIES COMPILE_FLAGS -DBUILDING_CBSASL=1)
 
+ADD_EXECUTABLE(cbsasl_test t/cbsasl_test.c)
+TARGET_LINK_LIBRARIES(cbsasl_test cbsasl)
+
 TARGET_LINK_LIBRARIES(cbsasl platform)
 TARGET_LINK_LIBRARIES(pwfile_test platform)
 TARGET_LINK_LIBRARIES(sasl_test platform)
@@ -44,6 +47,7 @@ TARGET_LINK_LIBRARIES(sasl_test platform)
 ADD_TEST(hmac hmac_test)
 ADD_TEST(pwfile pwfile_test)
 ADD_TEST(sasl sasl_test)
+ADD_TEST(client-server cbsasl_test)
 
 ADD_CUSTOM_TARGET(reformat-cbsasl-source
                   COMMAND astyle ${ASTYLE_CFLAGS}

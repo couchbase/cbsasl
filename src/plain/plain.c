@@ -26,8 +26,8 @@ cbsasl_error_t plain_server_init()
 
 cbsasl_error_t plain_server_start(cbsasl_conn_t *conn)
 {
-    conn->sasl_data = NULL;
-    conn->sasl_data_len = 0;
+    conn->c.server.sasl_data = NULL;
+    conn->c.server.sasl_data_len = 0;
     return SASL_CONTINUE;
 }
 
@@ -80,8 +80,8 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
             return SASL_FAIL;
         }
 
-        conn->username = strdup(username);
-        conn->config = strdup(cfg);
+        conn->c.server.username = strdup(username);
+        conn->c.server.config = strdup(cfg);
     }
 
     *output = NULL;
