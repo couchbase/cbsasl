@@ -120,3 +120,52 @@ cbsasl_error_t cbsasl_refresh(void)
 {
     return load_user_db();
 }
+
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_getprop(cbsasl_conn_t *conn,
+                              cbsasl_prop_t propnum,
+                              const void **pvalue)
+{
+    switch (propnum) {
+    case CBSASL_USERNAME:
+        *pvalue = conn->username;
+        break;
+    case CBSASL_CONFIG:
+        *pvalue = conn->config;
+        break;
+    default:
+        return SASL_BADPARAM;
+    }
+
+    return SASL_OK;
+}
+
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_setprop(cbsasl_conn_t *conn,
+                              cbsasl_prop_t propnum,
+                              const void *pvalue)
+{
+    void *old;
+    switch (propnum) {
+    case CBSASL_USERNAME:
+        old = conn->username;
+        if ((conn->username = strdup(pvalue)) == NULL) {
+            conn->username = old;
+            return SASL_NOMEM;
+        }
+        break;
+    case CBSASL_CONFIG:
+        old = conn->config;
+        if ((conn->config = strdup(pvalue)) == NULL) {
+            conn->config = old;
+            return SASL_NOMEM;
+        }
+        break;
+    default:
+        return SASL_BADPARAM;
+    }
+
+    free(old);
+    return SASL_OK;
+
+}

@@ -126,6 +126,21 @@ extern "C" {
     CBSASL_PUBLIC_API
     cbsasl_error_t cbsasl_refresh(void);
 
+    typedef enum {
+        CBSASL_USERNAME = 0,
+        CBSASL_CONFIG = 1
+    } cbsasl_prop_t;
+
+    CBSASL_PUBLIC_API
+    cbsasl_error_t cbsasl_getprop(cbsasl_conn_t *conn,
+                                  cbsasl_prop_t propnum,
+                                  const void **pvalue);
+
+    CBSASL_PUBLIC_API
+    cbsasl_error_t cbsasl_setprop(cbsasl_conn_t *conn,
+                                  cbsasl_prop_t propnum,
+                                  const void *pvalue);
+
 #ifdef __cplusplus
 }
 #endif
