@@ -42,8 +42,8 @@ cbsasl_error_t cbsasl_init()
 }
 
 CBSASL_PUBLIC_API
-cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
-                            const char *mech)
+cbsasl_error_t cbsasl_server_start(cbsasl_conn_t **conn,
+                                   const char *mech)
 {
     cbsasl_error_t err;
 
@@ -74,11 +74,11 @@ cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
 }
 
 CBSASL_PUBLIC_API
-cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
-                           const char *input,
-                           unsigned inputlen,
-                           const char **output,
-                           unsigned *outputlen)
+cbsasl_error_t cbsasl_server_step(cbsasl_conn_t *conn,
+                                  const char *input,
+                                  unsigned inputlen,
+                                  const char **output,
+                                  unsigned *outputlen)
 {
     return conn->mech.step(conn, input, inputlen, output, outputlen);
 }

@@ -91,8 +91,8 @@ extern "C" {
      * @return Whether or not the mecahnism initialization was successful
      */
     CBSASL_PUBLIC_API
-    cbsasl_error_t cbsasl_start(cbsasl_conn_t **conn,
-                                const char *mechanism);
+    cbsasl_error_t cbsasl_server_start(cbsasl_conn_t **conn,
+                                       const char *mechanism);
 
     /**
      * Does username/password authentication
@@ -103,11 +103,11 @@ extern "C" {
      * @return Whether or not the sasl step was successful
      */
     CBSASL_PUBLIC_API
-    cbsasl_error_t cbsasl_step(cbsasl_conn_t *conn,
-                               const char *input,
-                               unsigned inputlen,
-                               const char **output,
-                               unsigned *outputlen);
+    cbsasl_error_t cbsasl_server_step(cbsasl_conn_t *conn,
+                                      const char *input,
+                                      unsigned inputlen,
+                                      const char **output,
+                                      unsigned *outputlen);
 
     /**
      * Frees up funushed sasl connections
