@@ -37,7 +37,7 @@ cbsasl_error_t cbsasl_list_mechs(const char **mechs,
 CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_server_init()
 {
-    srand(getpid());
+    srand((unsigned int)time(NULL));
     pwfile_init();
     return load_user_db();
 }
@@ -177,11 +177,11 @@ cbsasl_error_t cbsasl_setprop(cbsasl_conn_t *conn,
                               cbsasl_prop_t propnum,
                               const void *pvalue)
 {
+    void *old;
     if (conn->client) {
         return SASL_BADPARAM;
     }
 
-    void *old;
     switch (propnum) {
     case CBSASL_USERNAME:
         old = conn->c.server.username;
