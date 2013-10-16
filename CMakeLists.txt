@@ -2,13 +2,16 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE)
 
-SET(cbsasl_sources src/cbsasl.c
+SET(cbsasl_sources
+            src/client.c
+            src/common.c
             src/cram-md5/cram-md5.c
             src/cram-md5/hmac.c
-            src/hash.c
             src/cram-md5/md5.c
+            src/hash.c
             src/plain/plain.c
-            src/pwfile.c)
+            src/pwfile.c
+            src/server.c)
 
 ADD_LIBRARY(cbsasl SHARED ${cbsasl_sources})
 SET_TARGET_PROPERTIES(cbsasl PROPERTIES SOVERSION 1.1.1)
