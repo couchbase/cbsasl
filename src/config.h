@@ -23,18 +23,10 @@
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
+#include <platform/platform.h>
 
-#ifdef _WIN32
-#include <windows.h>
-typedef unsigned __int8 cbsasl_uint8_t;
-typedef unsigned __int16 cbsasl_uint16_t;
-typedef unsigned __int32 cbsasl_uint32_t;
-#else
-#include <unistd.h>
-#include <stdint.h>
 typedef uint8_t cbsasl_uint8_t;
 typedef uint16_t cbsasl_uint16_t;
 typedef uint32_t cbsasl_uint32_t;
-#endif
 
 #endif /* SRC_CONFIG_H */
