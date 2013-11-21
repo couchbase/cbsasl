@@ -48,10 +48,10 @@ TARGET_LINK_LIBRARIES(cbsasl platform)
 TARGET_LINK_LIBRARIES(pwfile_test platform)
 TARGET_LINK_LIBRARIES(sasl_test platform)
 
-ADD_TEST(hmac hmac_test)
-ADD_TEST(pwfile pwfile_test)
-ADD_TEST(sasl sasl_test)
-ADD_TEST(client-server cbsasl_test)
+ADD_TEST(cbsasl-hmac hmac_test)
+ADD_TEST(cbsasl-pwfile pwfile_test)
+ADD_TEST(cbsasl-sasl sasl_test)
+ADD_TEST(cbsasl-client-server cbsasl_test)
 
 ADD_CUSTOM_TARGET(reformat-cbsasl-source
                   COMMAND astyle ${ASTYLE_CFLAGS}
