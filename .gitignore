@@ -19,3 +19,4 @@
 /libcbsasl.so*
 /pwfile_test
 /sasl_test
+/sasl_server_test.pw
