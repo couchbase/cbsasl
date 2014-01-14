@@ -54,6 +54,7 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
         const char *username = input + inputpos;
         const char *password = NULL;
         char *stored_password;
+        size_t stored_pwlen;
         while (inputpos < inputlen && input[inputpos] != '\0') {
             inputpos++;
         }
@@ -73,10 +74,9 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
             return SASL_FAIL;
         }
 
-        if (pwlen != strlen(stored_password)) {
-            return SASL_FAIL;
-        }
-        if (cbsasl_secure_compare(password, stored_password, pwlen) != 0) {
+        stored_pwlen = strlen(stored_password);
+        if (cbsasl_secure_compare(password, pwlen,
+                                  stored_password, stored_pwlen) != 0) {
             return SASL_FAIL;
         }
 

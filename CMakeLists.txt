@@ -11,7 +11,8 @@ SET(cbsasl_sources
             src/hash.c
             src/plain/plain.c
             src/pwfile.c
-            src/server.c)
+            src/server.c
+            src/strcmp.c)
 
 ADD_LIBRARY(cbsasl SHARED ${cbsasl_sources})
 SET_TARGET_PROPERTIES(cbsasl PROPERTIES SOVERSION 1.1.1)
@@ -50,10 +51,13 @@ TARGET_LINK_LIBRARIES(cbsasl platform)
 TARGET_LINK_LIBRARIES(pwfile_test platform)
 TARGET_LINK_LIBRARIES(sasl_test platform)
 
+ADD_EXECUTABLE(cbsasl-strcmp_test tests/strcmp_test.c src/strcmp.c)
+
 ADD_TEST(cbsasl-hmac hmac_test)
 ADD_TEST(cbsasl-pwfile pwfile_test)
 ADD_TEST(cbsasl-sasl sasl_test)
 ADD_TEST(cbsasl-client-server cbsasl_test)
+ADD_TEST(cbsasl-strcmp cbsasl-strcmp_test)
 
 ADD_CUSTOM_TARGET(reformat-cbsasl-source
                   COMMAND astyle ${ASTYLE_CFLAGS}

@@ -1,5 +1,6 @@
+/* -*- Mode: C; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: nil -*- */
 /*
- *     Copyright 2013 Couchbase, Inc.
+ *     Copyright 2014 Couchbase, Inc.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,17 +15,26 @@
  *   limitations under the License.
  */
 
-#ifndef CBSASL_UTIL_H_
-#define CBSASL_UTIL_H_ 1
+#include "config.h"
+#include <cbsasl/cbsasl.h>
+#include "util.h"
 
-/* Encode hexadecimal representation of bytes from src into dest.
- * Will write srclen * 2 bytes. */
-void cbsasl_hex_encode(char *dest, const char *src, size_t srclen);
+int cbsasl_secure_compare(const char *a, size_t alen,
+                          const char *b, size_t blen)
+{
+    size_t xx;
+    size_t yi = 0;
+    size_t bi = 0;
+    int acc = (int)alen ^ (int)blen;
 
-/* Compare a and b without revealing their content by short-circuiting */
-int cbsasl_secure_compare(const char *a, size_t alen, const char *b, size_t blen);
+    for (xx = 0; xx < alen; ++xx) {
+        acc |= a[xx] ^ b[bi];
+        if (bi < blen) {
+            ++bi;
+        } else {
+            ++yi;
+        }
+    }
 
-cbsasl_error_t cbsasl_secure_random(char *dest, size_t len);
-
-
-#endif /*  CBSASL_UTIL_H_ */
+    return acc;
+}
