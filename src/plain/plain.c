@@ -52,7 +52,7 @@ cbsasl_error_t plain_server_step(cbsasl_conn_t *conn,
         char *cfg = NULL;
         size_t pwlen = 0;
         const char *username = input + inputpos;
-        const char *password;
+        const char *password = NULL;
         char *stored_password;
         while (inputpos < inputlen && input[inputpos] != '\0') {
             inputpos++;
