@@ -33,15 +33,15 @@ INSTALL(TARGETS cbsasl
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-ADD_EXECUTABLE(hmac_test t/hmac_test.c src/cram-md5/hmac.c src/cram-md5/md5.c)
-ADD_EXECUTABLE(pwfile_test t/pwfile.c src/pwfile.c src/hash.c)
+ADD_EXECUTABLE(hmac_test tests/hmac_test.c src/cram-md5/hmac.c src/cram-md5/md5.c)
+ADD_EXECUTABLE(pwfile_test tests/pwfile.c src/pwfile.c src/hash.c)
 
 # We're using an "internal api" of the library in the test so we can't
 # use the library we just built
-ADD_EXECUTABLE(sasl_test t/sasl_server_test.c ${cbsasl_sources})
+ADD_EXECUTABLE(sasl_test tests/sasl_server_test.c ${cbsasl_sources})
 SET_TARGET_PROPERTIES(sasl_test PROPERTIES COMPILE_FLAGS -DBUILDING_CBSASL=1)
 
-ADD_EXECUTABLE(cbsasl_test t/cbsasl_test.c)
+ADD_EXECUTABLE(cbsasl_test tests/cbsasl_test.c)
 TARGET_LINK_LIBRARIES(cbsasl_test cbsasl)
 
 TARGET_LINK_LIBRARIES(cbsasl platform)
