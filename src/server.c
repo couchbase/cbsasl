@@ -23,6 +23,9 @@
 #include "pwfile.h"
 #include "util.h"
 #include <time.h>
+#include <platform/random.h>
+
+static cb_rand_t randgen;
 
 #define IS_MECH(str, mech) (strncmp(str, mech, strlen(mech)))
 
@@ -35,11 +38,20 @@ cbsasl_error_t cbsasl_list_mechs(const char **mechs,
 }
 
 CBSASL_PUBLIC_API
-cbsasl_error_t cbsasl_server_init()
+cbsasl_error_t cbsasl_server_init(void)
 {
-    srand((unsigned int)time(NULL));
+    if (cb_rand_open(&randgen) != 0) {
+        return SASL_FAIL;
+    }
     pwfile_init();
     return load_user_db();
+}
+
+CBSASL_PUBLIC_API
+cbsasl_error_t cbsasl_server_term(void)
+{
+    return cb_rand_close(randgen) == 0 ? SASL_OK : SASL_FAIL;
+
 }
 
 CBSASL_PUBLIC_API
@@ -167,4 +179,9 @@ cbsasl_error_t cbsasl_setprop(cbsasl_conn_t *conn,
     free(old);
     return SASL_OK;
 
+}
+
+/* This function is added to keep the randgen static ;-) */
+cbsasl_error_t cbsasl_secure_random(char *dest, size_t len) {
+    return (cb_rand_get(randgen, dest, len) == 0) ? SASL_OK : SASL_FAIL;
 }

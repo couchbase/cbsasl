@@ -20,37 +20,26 @@
 #include "pwfile.h"
 #include "util.h"
 
-#define CHALLENGE_TEMPLATE "<xxxxxxxxxxxxxxxx.0@127.0.0.1>"
-#define CHALLENGE_LENGTH strlen(CHALLENGE_TEMPLATE)
-#define NONCE_LENGTH 16
-#define NONCE_SWAPS 100
+#define NONCE_LENGTH 8
 
-static void generate_nonce(char *nonce)
-{
-    int i;
-    for (i = 0; i < NONCE_LENGTH; i++) {
-        nonce[i] = '0' + (rand() % 10);
-    }
-}
-
-static void challenge(char **challenge, unsigned *challengelen)
-{
-    char nonce[NONCE_LENGTH];
-    generate_nonce(nonce);
-    *challenge = (char *)malloc(CHALLENGE_LENGTH * sizeof(char));
-    memcpy((void *)((*challenge)), CHALLENGE_TEMPLATE, CHALLENGE_LENGTH);
-    memcpy((void *)((*challenge) + 1), nonce, NONCE_LENGTH);
-    *challengelen = CHALLENGE_LENGTH;
-}
-
-cbsasl_error_t cram_md5_server_init()
-{
+cbsasl_error_t cram_md5_server_init() {
     return SASL_OK;
 }
 
-cbsasl_error_t cram_md5_server_start(cbsasl_conn_t *conn)
-{
-    challenge(&(conn->c.server.sasl_data), &(conn->c.server.sasl_data_len));
+cbsasl_error_t cram_md5_server_start(cbsasl_conn_t* conn) {
+    /* Generate a challenge */
+    char nonce[NONCE_LENGTH];
+    if (cbsasl_secure_random(nonce, NONCE_LENGTH) != SASL_OK) {
+        return SASL_FAIL;
+    }
+
+    conn->c.server.sasl_data = malloc(NONCE_LENGTH * 2);
+    if(conn->c.server.sasl_data == NULL) {
+        return SASL_FAIL;
+    }
+
+    conn->c.server.sasl_data_len = NONCE_LENGTH * 2;
+    cbsasl_hex_encode(conn->c.server.sasl_data, nonce, NONCE_LENGTH);
     return SASL_CONTINUE;
 }
 

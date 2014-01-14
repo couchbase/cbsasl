@@ -151,6 +151,7 @@ int main(void)
     test_auth("PLAIN");
     test_auth("CRAM-MD5");
 
+    cbsasl_server_term();
     remove(cbpwfile);
     return 0;
 }

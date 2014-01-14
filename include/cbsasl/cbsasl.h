@@ -112,6 +112,14 @@ extern "C" {
     cbsasl_error_t cbsasl_server_init(void);
 
     /**
+     * close and release allocated resources
+     *
+     * @return SASL_OK upon success
+     */
+    CBSASL_PUBLIC_API
+    cbsasl_error_t cbsasl_server_term(void);
+
+    /**
      * Creates a sasl connection and begins authentication
      *
      * When a client receives a request for sasl authentication this function is

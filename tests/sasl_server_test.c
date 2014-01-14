@@ -90,6 +90,8 @@ static void test_plain_auth()
     err = cbsasl_server_step(conn, "\0mikewied\0mikepw", 16, &output, &outputlen);
     assert(err == SASL_OK);
     free((void *)output);
+    cbsasl_server_term();
+
 
     /* With wrong password */
     output = NULL;
@@ -106,6 +108,8 @@ static void test_plain_auth()
     cbsasl_dispose(&conn);
     assert(conn == NULL);
 
+    cbsasl_server_term();
+
     /* with no password */
     output = NULL;
     err = cbsasl_server_init();
@@ -117,6 +121,8 @@ static void test_plain_auth()
     err = cbsasl_server_step(conn, "\0nopass\0", 8, &output, &outputlen);
     assert(err == SASL_OK);
     free((void *)output);
+
+    cbsasl_server_term();
 
     /* with authzid */
     output = NULL;
@@ -130,6 +136,8 @@ static void test_plain_auth()
     assert(err == SASL_OK);
     free((void *)output);
 
+    cbsasl_server_term();
+
     /* with no pw or username ending null */
     output = NULL;
     err = cbsasl_server_init();
@@ -141,6 +149,7 @@ static void test_plain_auth()
     err = cbsasl_server_step(conn, "funzid\0mikewied", 15, &output, &outputlen);
     assert(err != SASL_OK);
     free((void *)output);
+    cbsasl_server_term();
 
     /* with no nulls at all */
     output = NULL;
@@ -153,6 +162,7 @@ static void test_plain_auth()
     err = cbsasl_server_step(conn, "funzidmikewied", 14, &output, &outputlen);
     assert(err != SASL_OK);
     free((void *)output);
+    cbsasl_server_term();
 
     cbsasl_dispose(&conn);
     assert(conn == NULL);
@@ -173,7 +183,6 @@ static void test_cram_md5_auth()
 
     err = cbsasl_server_start(&conn, "CRAM-MD5", NULL, 0, NULL, NULL);
     assert(err == SASL_CONTINUE);
-    assert(conn->c.server.sasl_data_len == 30);
 
     construct_cram_md5_credentials(creds, &credslen, user, strlen(user), pass,
                                    strlen(pass), conn->c.server.sasl_data,
@@ -186,6 +195,7 @@ static void test_cram_md5_auth()
     }
 
     cbsasl_dispose(&conn);
+    cbsasl_server_term();
     assert(conn == NULL);
 }
 
