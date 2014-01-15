@@ -23,10 +23,12 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/include
                            ${CMAKE_CURRENT_SOURCE_DIR}/../platform/include
                            ${CMAKE_INSTALL_PREFIX}/include)
 
+IF (INSTALL_HEADER_FILES)
 INSTALL(FILES
         include/cbsasl/cbsasl.h
         include/cbsasl/visibility.h
         DESTINATION include/cbsasl)
+ENDIF(INSTALL_HEADER_FILES)
 
 INSTALL(TARGETS cbsasl
         RUNTIME DESTINATION bin
