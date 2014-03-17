@@ -13,8 +13,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-#undef NDEBUG
 #include "config.h"
 
 #include "hash.h"
@@ -42,7 +40,7 @@ static void kill_whitey(char *s)
 static int u_hash_key(const char *u)
 {
     cbsasl_uint32_t h = hash(u, strlen(u), 0) % n_uht_buckets;
-    assert(h < n_uht_buckets);
+    cb_assert(h < n_uht_buckets);
     return h;
 }
 
@@ -79,18 +77,18 @@ static void store_pw(user_db_entry_t **ht,
     user_db_entry_t *e;
     int h;
 
-    assert(ht);
-    assert(u);
-    assert(p);
+    cb_assert(ht);
+    cb_assert(u);
+    cb_assert(p);
 
     e = calloc(1, sizeof(user_db_entry_t));
-    assert(e);
+    cb_assert(e);
     e->username = strdup(u);
-    assert(e->username);
+    cb_assert(e->username);
     e->password = strdup(p);
-    assert(e->password);
+    cb_assert(e->password);
     e->config = cfg ? strdup(cfg) : NULL;
-    assert(!cfg || e->config);
+    cb_assert(!cfg || e->config);
 
     h = u_hash_key(u);
 
@@ -103,8 +101,8 @@ char *find_pw(const char *u, char **cfg)
     int h;
     user_db_entry_t *e;
 
-    assert(u);
-    assert(user_ht);
+    cb_assert(u);
+    cb_assert(user_ht);
 
     cb_mutex_enter(&uhash_lock);
     h = u_hash_key(u);

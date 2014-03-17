@@ -19,8 +19,8 @@
  * in rfc 2202. http://tools.ietf.org/html/draft-cheng-hmac-test-cases-00
  */
 
-#undef NDEBUG
 #include "config.h"
+#include <platform/platform.h>
 
 #include "cram-md5/hmac.h"
 
@@ -38,7 +38,7 @@ static void test1()
 
     unsigned char new_digest[DIGEST_LENGTH];
     hmac_md5(data, 8, key, 16, new_digest);
-    assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
+    cb_assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
 }
 
 static void test2()
@@ -54,7 +54,7 @@ static void test2()
 
     unsigned char new_digest[DIGEST_LENGTH];
     hmac_md5(data, 28, key, 4, new_digest);
-    assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
+    cb_assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
 }
 
 static void test3()
@@ -78,7 +78,7 @@ static void test3()
 
     unsigned char new_digest[DIGEST_LENGTH];
     hmac_md5(data, 50, key, 16, new_digest);
-    assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
+    cb_assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
 }
 
 static void test4()
@@ -104,7 +104,7 @@ static void test4()
 
     unsigned char new_digest[DIGEST_LENGTH];
     hmac_md5(data, 50, key, 25, new_digest);
-    assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
+    cb_assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
 }
 
 static void test5()
@@ -121,7 +121,7 @@ static void test5()
 
     unsigned char new_digest[DIGEST_LENGTH];
     hmac_md5(data, 20, key, 16, new_digest);
-    assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
+    cb_assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
 }
 
 static void test6()
@@ -147,7 +147,7 @@ static void test6()
 
     unsigned char new_digest[DIGEST_LENGTH];
     hmac_md5(data, 54, key, 80, new_digest);
-    assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
+    cb_assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
 }
 
 static void test7()
@@ -173,7 +173,7 @@ static void test7()
 
     unsigned char new_digest[DIGEST_LENGTH];
     hmac_md5(data, 73, key, 80, new_digest);
-    assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
+    cb_assert(memcmp(digest, new_digest, DIGEST_LENGTH) == 0);
 }
 
 int main()

@@ -13,8 +13,8 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-#undef NDEBUG
 #include "config.h"
+#include <platform/platform.h>
 #include "cbsasl/cbsasl.h"
 #include "cram-md5/hmac.h"
 #include "pwfile.h"
@@ -25,17 +25,17 @@ const char *cbpwfile = "sasl_server_test.pw";
 static void create_pw_file()
 {
     FILE *fp = fopen(cbpwfile, "w");
-    assert(fp != NULL);
+    cb_assert(fp != NULL);
 
     fprintf(fp, "mikewied mikepw \ncseo cpw \njlim jpw \nnopass\n");
-    assert(fclose(fp) == 0);
+    cb_assert(fclose(fp) == 0);
 
     putenv("ISASL_PWFILE=sasl_server_test.pw");
 }
 
 static void remove_pw_file()
 {
-    assert(remove(cbpwfile) == 0);
+    cb_assert(remove(cbpwfile) == 0);
     free_user_ht();
 }
 
@@ -63,9 +63,9 @@ static void test_list_mechs()
     const char *mechs = NULL;
     unsigned len = 0;
     cbsasl_error_t err = cbsasl_list_mechs(&mechs, &len);
-    assert(err == SASL_OK);
-    assert(strncmp(mechs, "CRAM-MD5 PLAIN", len) == 0);
-    assert(strncmp(mechs, "CRDM-MD5 PLAIN", len) != 0);
+    cb_assert(err == SASL_OK);
+    cb_assert(strncmp(mechs, "CRAM-MD5 PLAIN", len) == 0);
+    cb_assert(strncmp(mechs, "CRDM-MD5 PLAIN", len) != 0);
 }
 
 static void test_plain_auth()
@@ -76,19 +76,19 @@ static void test_plain_auth()
     cbsasl_error_t err;
 
     err = cbsasl_server_init();
-    assert(err == SASL_OK);
+    cb_assert(err == SASL_OK);
 
     err = cbsasl_server_start(&conn, "bad_mech", NULL, 0, NULL, NULL);
-    assert(err == SASL_BADPARAM);
+    cb_assert(err == SASL_BADPARAM);
     free((void *)output);
 
     /* Normal behavior */
     output = NULL;
     err = cbsasl_server_start(&conn, "PLAIN", NULL, 0, NULL, NULL);
-    assert(err == SASL_CONTINUE);
+    cb_assert(err == SASL_CONTINUE);
 
     err = cbsasl_server_step(conn, "\0mikewied\0mikepw", 16, &output, &outputlen);
-    assert(err == SASL_OK);
+    cb_assert(err == SASL_OK);
     free((void *)output);
     cbsasl_server_term();
 
@@ -96,30 +96,30 @@ static void test_plain_auth()
     /* With wrong password */
     output = NULL;
     err = cbsasl_server_init();
-    assert(err == SASL_OK);
+    cb_assert(err == SASL_OK);
 
     err = cbsasl_server_start(&conn, "PLAIN", NULL, 0, NULL, NULL);
-    assert(err == SASL_CONTINUE);
+    cb_assert(err == SASL_CONTINUE);
 
     err = cbsasl_server_step(conn, "\0mikewied\0badpPW", 16, &output, &outputlen);
-    assert(err == SASL_FAIL);
+    cb_assert(err == SASL_FAIL);
     free((void *)output);
 
     cbsasl_dispose(&conn);
-    assert(conn == NULL);
+    cb_assert(conn == NULL);
 
     cbsasl_server_term();
 
     /* with no password */
     output = NULL;
     err = cbsasl_server_init();
-    assert(err == SASL_OK);
+    cb_assert(err == SASL_OK);
 
     err = cbsasl_server_start(&conn, "PLAIN", NULL, 0, NULL, NULL);
-    assert(err == SASL_CONTINUE);
+    cb_assert(err == SASL_CONTINUE);
 
     err = cbsasl_server_step(conn, "\0nopass\0", 8, &output, &outputlen);
-    assert(err == SASL_OK);
+    cb_assert(err == SASL_OK);
     free((void *)output);
 
     cbsasl_server_term();
@@ -127,13 +127,13 @@ static void test_plain_auth()
     /* with authzid */
     output = NULL;
     err = cbsasl_server_init();
-    assert(err == SASL_OK);
+    cb_assert(err == SASL_OK);
 
     err = cbsasl_server_start(&conn, "PLAIN", NULL, 0, NULL, NULL);
-    assert(err == SASL_CONTINUE);
+    cb_assert(err == SASL_CONTINUE);
 
     err = cbsasl_server_step(conn, "funzid\0mikewied\0mikepw", 22, &output, &outputlen);
-    assert(err == SASL_OK);
+    cb_assert(err == SASL_OK);
     free((void *)output);
 
     cbsasl_server_term();
@@ -141,31 +141,31 @@ static void test_plain_auth()
     /* with no pw or username ending null */
     output = NULL;
     err = cbsasl_server_init();
-    assert(err == SASL_OK);
+    cb_assert(err == SASL_OK);
 
     err = cbsasl_server_start(&conn, "PLAIN", NULL, 0, NULL, NULL);
-    assert(err == SASL_CONTINUE);
+    cb_assert(err == SASL_CONTINUE);
 
     err = cbsasl_server_step(conn, "funzid\0mikewied", 15, &output, &outputlen);
-    assert(err != SASL_OK);
+    cb_assert(err != SASL_OK);
     free((void *)output);
     cbsasl_server_term();
 
     /* with no nulls at all */
     output = NULL;
     err = cbsasl_server_init();
-    assert(err == SASL_OK);
+    cb_assert(err == SASL_OK);
 
     err = cbsasl_server_start(&conn, "PLAIN", NULL, 0, NULL, NULL);
-    assert(err == SASL_CONTINUE);
+    cb_assert(err == SASL_CONTINUE);
 
     err = cbsasl_server_step(conn, "funzidmikewied", 14, &output, &outputlen);
-    assert(err != SASL_OK);
+    cb_assert(err != SASL_OK);
     free((void *)output);
     cbsasl_server_term();
 
     cbsasl_dispose(&conn);
-    assert(conn == NULL);
+    cb_assert(conn == NULL);
 }
 
 static void test_cram_md5_auth()
@@ -179,24 +179,24 @@ static void test_cram_md5_auth()
     unsigned outputlen = 0;
 
     cbsasl_error_t err = cbsasl_server_init();
-    assert(err == SASL_OK);
+    cb_assert(err == SASL_OK);
 
     err = cbsasl_server_start(&conn, "CRAM-MD5", NULL, 0, NULL, NULL);
-    assert(err == SASL_CONTINUE);
+    cb_assert(err == SASL_CONTINUE);
 
     construct_cram_md5_credentials(creds, &credslen, user, strlen(user), pass,
                                    strlen(pass), conn->c.server.sasl_data,
                                    conn->c.server.sasl_data_len);
 
     err = cbsasl_server_step(conn, creds, credslen, &output, &outputlen);
-    assert(err == SASL_OK);
+    cb_assert(err == SASL_OK);
     if (output != NULL) {
         free((char *)output);
     }
 
     cbsasl_dispose(&conn);
     cbsasl_server_term();
-    assert(conn == NULL);
+    cb_assert(conn == NULL);
 }
 
 int main()

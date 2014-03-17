@@ -1,4 +1,4 @@
-#undef NDEBUG
+#include <platform/platform.h>
 #include "cbsasl/cbsasl.h"
 #include "config.h"
 #include "pwfile.h"
@@ -15,17 +15,17 @@ const char *pass3 = "limpw";
 static void create_pw_file()
 {
     FILE *fp = fopen(cbpwfile, "w");
-    assert(fp != NULL);
+    cb_assert(fp != NULL);
 
     fprintf(fp, "mikewied mikepw \ncseo seopw \njlim limpw \n");
-    assert(fclose(fp) == 0);
+    cb_assert(fclose(fp) == 0);
 
     putenv("ISASL_PWFILE=pwfile_test.pw");
 }
 
 static void remove_pw_file()
 {
-    assert(remove(cbpwfile) == 0);
+    cb_assert(remove(cbpwfile) == 0);
     free_user_ht();
 }
 
@@ -36,15 +36,15 @@ static void test_pwfile()
 
     pwfile_init();
     create_pw_file();
-    assert(load_user_db() == SASL_OK);
+    cb_assert(load_user_db() == SASL_OK);
     password = find_pw(user1, &cfg);
-    assert(strncmp(password, pass1, strlen(pass1)) == 0);
+    cb_assert(strncmp(password, pass1, strlen(pass1)) == 0);
 
     password = find_pw(user2, &cfg);
-    assert(strncmp(password, pass2, strlen(pass2)) == 0);
+    cb_assert(strncmp(password, pass2, strlen(pass2)) == 0);
 
     password = find_pw(user3, &cfg);
-    assert(strncmp(password, pass3, strlen(pass3)) == 0);
+    cb_assert(strncmp(password, pass3, strlen(pass3)) == 0);
 
     remove_pw_file();
 }

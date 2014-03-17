@@ -14,10 +14,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-#undef NDEBUG
 #include "config.h"
 #include <cbsasl/cbsasl.h>
+#include <platform/platform.h>
 #include "util.h"
 
 #include <stdlib.h>
@@ -44,7 +43,7 @@ static void assert_different(const char *a, const char *b) {
 int main(void)
 {
     /* Check that it enforce the length without running outside the pointer */
-    assert(cbsasl_secure_compare(NULL, 0, NULL, 0) == 0);
+    cb_assert(cbsasl_secure_compare(NULL, 0, NULL, 0) == 0);
 
     /* Check that it compares right with equal length and same input */
     assert_equal("");
