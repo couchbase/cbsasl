@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
+#undef NDEBUG
 #include "config.h"
 #include "cbsasl/cbsasl.h"
 #include "cram-md5/hmac.h"

@@ -14,6 +14,7 @@
  *   limitations under the License.
  */
 
+#undef NDEBUG
 #include "config.h"
 
 #include "hash.h"

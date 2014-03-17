@@ -19,6 +19,7 @@
  * in rfc 2202. http://tools.ietf.org/html/draft-cheng-hmac-test-cases-00
  */
 
+#undef NDEBUG
 #include "config.h"
 
 #include "cram-md5/hmac.h"

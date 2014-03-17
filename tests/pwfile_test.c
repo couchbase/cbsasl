@@ -1,3 +1,4 @@
+#undef NDEBUG
 #include "cbsasl/cbsasl.h"
 #include "config.h"
 #include "pwfile.h"

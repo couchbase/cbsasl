@@ -15,6 +15,7 @@
  *   limitations under the License.
  */
 
+#undef NDEBUG
 #include "config.h"
 #include <cbsasl/cbsasl.h>
 #include "util.h"
@@ -24,14 +25,20 @@
 #include <string.h>
 #include <assert.h>
 
+int retval = EXIT_SUCCESS;
+
 static void assert_equal(const char *input) {
-    assert(cbsasl_secure_compare(input, strlen(input),
-                                 input, strlen(input)) == 0);
+    if (cbsasl_secure_compare(input, strlen(input), input, strlen(input)) != 0) {
+        fprintf(stderr, "ERROR: assert_equal failed for [%s]", input);
+        retval = EXIT_FAILURE;
+    }
 }
 
 static void assert_different(const char *a, const char *b) {
-    assert(cbsasl_secure_compare(a, strlen(a),
-                                 b, strlen(b)) != 0);
+    if (cbsasl_secure_compare(a, strlen(a), b, strlen(b)) == 0) {
+        fprintf(stderr, "ERROR: Expected a difference between [%s] [%s]", a, b);
+        retval = EXIT_FAILURE;
+    }
 }
 
 int main(void)
@@ -60,5 +67,5 @@ int main(void)
     assert_different("!", "a");
     assert_different("1", "a");
 
-    return 0;
+    return retval;
 }
