@@ -46,13 +46,13 @@ INSTALL(TARGETS cbsasl
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-ADD_EXECUTABLE(cbsasl_hmac_test tests/hmac_test.c
+ADD_EXECUTABLE(cbsasl_hmac_test tests/cbsasl/hmac_test.c
                                 src/cram-md5/hmac.c
                                 src/cram-md5/hmac.h
                                 src/cram-md5/md5.c
                                 src/cram-md5/md5.h)
 
-ADD_EXECUTABLE(cbsasl_pwfile_test tests/pwfile_test.c
+ADD_EXECUTABLE(cbsasl_pwfile_test tests/cbsasl/pwfile_test.c
                                   src/pwfile.c
                                   src/pwfile.h
                                   src/hash.c
@@ -60,10 +60,10 @@ ADD_EXECUTABLE(cbsasl_pwfile_test tests/pwfile_test.c
 
 # We're using an "internal api" of the library in the test so we can't
 # use the library we just built
-ADD_EXECUTABLE(sasl_test tests/sasl_server_test.c ${cbsasl_sources})
+ADD_EXECUTABLE(sasl_test tests/cbsasl/sasl_server_test.c ${cbsasl_sources})
 SET_TARGET_PROPERTIES(sasl_test PROPERTIES COMPILE_FLAGS -DBUILDING_CBSASL=1)
 
-ADD_EXECUTABLE(cbsasl_test tests/cbsasl_test.c
+ADD_EXECUTABLE(cbsasl_test tests/cbsasl/cbsasl_test.c
                            include/cbsasl/cbsasl.h
                            include/cbsasl/visibility.h)
 TARGET_LINK_LIBRARIES(cbsasl_test cbsasl)
@@ -72,7 +72,7 @@ TARGET_LINK_LIBRARIES(cbsasl platform)
 TARGET_LINK_LIBRARIES(cbsasl_pwfile_test platform)
 TARGET_LINK_LIBRARIES(sasl_test platform)
 
-ADD_EXECUTABLE(cbsasl_strcmp_test tests/strcmp_test.c
+ADD_EXECUTABLE(cbsasl_strcmp_test tests/cbsasl/strcmp_test.c
                                   include/cbsasl/cbsasl.h
                                   include/cbsasl/visibility.h
                                   src/strcmp.c)
