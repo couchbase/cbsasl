@@ -47,18 +47,18 @@ INSTALL(TARGETS cbsasl
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-ADD_EXECUTABLE(hmac_test tests/hmac_test.c
-                         src/config.h
-                         src/cram-md5/hmac.c
-                         src/cram-md5/hmac.h
-                         src/cram-md5/md5.c
-                         src/cram-md5/md5.h)
+ADD_EXECUTABLE(cbsasl_hmac_test tests/hmac_test.c
+                                src/config.h
+                                src/cram-md5/hmac.c
+                                src/cram-md5/hmac.h
+                                src/cram-md5/md5.c
+                                src/cram-md5/md5.h)
 
-ADD_EXECUTABLE(pwfile_test tests/pwfile_test.c
-                           src/pwfile.c
-                           src/pwfile.h
-                           src/hash.c
-                           src/hash.h)
+ADD_EXECUTABLE(cbsasl_pwfile_test tests/pwfile_test.c
+                                  src/pwfile.c
+                                  src/pwfile.h
+                                  src/hash.c
+                                  src/hash.h)
 
 # We're using an "internal api" of the library in the test so we can't
 # use the library we just built
@@ -71,20 +71,20 @@ ADD_EXECUTABLE(cbsasl_test tests/cbsasl_test.c
 TARGET_LINK_LIBRARIES(cbsasl_test cbsasl)
 
 TARGET_LINK_LIBRARIES(cbsasl platform)
-TARGET_LINK_LIBRARIES(pwfile_test platform)
+TARGET_LINK_LIBRARIES(cbsasl_pwfile_test platform)
 TARGET_LINK_LIBRARIES(sasl_test platform)
 
-ADD_EXECUTABLE(cbsasl-strcmp_test tests/strcmp_test.c
+ADD_EXECUTABLE(cbsasl_strcmp_test tests/strcmp_test.c
                                   src/config.h
                                   include/cbsasl/cbsasl.h
                                   include/cbsasl/visibility.h
                                   src/strcmp.c)
 
-ADD_TEST(cbsasl-hmac hmac_test)
-ADD_TEST(cbsasl-pwfile pwfile_test)
+ADD_TEST(cbsasl-hmac cbsasl_hmac_test)
+ADD_TEST(cbsasl-pwfile cbsasl_pwfile_test)
 ADD_TEST(cbsasl-sasl sasl_test)
 ADD_TEST(cbsasl-client-server cbsasl_test)
-ADD_TEST(cbsasl-strcmp cbsasl-strcmp_test)
+ADD_TEST(cbsasl-strcmp cbsasl_strcmp_test)
 
 ADD_CUSTOM_TARGET(reformat-cbsasl-source
                   COMMAND astyle ${ASTYLE_CFLAGS}
