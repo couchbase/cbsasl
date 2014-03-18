@@ -15,7 +15,6 @@
  *   limitations under the License.
  */
 
-#include "config.h"
 #include <cbsasl/cbsasl.h>
 #include "util.h"
 

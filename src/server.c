@@ -14,9 +14,8 @@
  *   limitations under the License.
  */
 
-#include "config.h"
+#include <cbsasl/cbsasl.h>
 
-#include "cbsasl/cbsasl.h"
 #include "cram-md5/cram-md5.h"
 #include "cram-md5/hmac.h"
 #include "plain/plain.h"
@@ -24,6 +23,8 @@
 #include "util.h"
 #include <time.h>
 #include <platform/random.h>
+#include <string.h>
+#include <stdlib.h>
 
 static cb_rand_t randgen;
 

@@ -14,12 +14,12 @@
  *   limitations under the License.
  */
 
-#include "config.h"
-
 #include "cbsasl/cbsasl.h"
 #include "cram-md5/hmac.h"
 #include "util.h"
 #include <time.h>
+#include <stdlib.h>
+#include <string.h>
 
 CBSASL_PUBLIC_API
 cbsasl_error_t cbsasl_client_new(const char *service,

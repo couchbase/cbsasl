@@ -17,7 +17,6 @@
 #ifndef SRC_PWFILE_H_
 #define SRC_PWFILE_H_ 1
 
-#include "config.h"
 #include "cbsasl/cbsasl.h"
 
 typedef struct user_db_entry {

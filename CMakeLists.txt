@@ -8,7 +8,6 @@ SET(cbsasl_sources
                    include/cbsasl/visibility.h
                    src/client.c
                    src/common.c
-                   src/config.h
                    src/cram-md5/cram-md5.c
                    src/cram-md5/cram-md5.h
                    src/cram-md5/hmac.c
@@ -48,7 +47,6 @@ INSTALL(TARGETS cbsasl
         ARCHIVE DESTINATION lib)
 
 ADD_EXECUTABLE(cbsasl_hmac_test tests/hmac_test.c
-                                src/config.h
                                 src/cram-md5/hmac.c
                                 src/cram-md5/hmac.h
                                 src/cram-md5/md5.c
@@ -75,7 +73,6 @@ TARGET_LINK_LIBRARIES(cbsasl_pwfile_test platform)
 TARGET_LINK_LIBRARIES(sasl_test platform)
 
 ADD_EXECUTABLE(cbsasl_strcmp_test tests/strcmp_test.c
-                                  src/config.h
                                   include/cbsasl/cbsasl.h
                                   include/cbsasl/visibility.h
                                   src/strcmp.c)

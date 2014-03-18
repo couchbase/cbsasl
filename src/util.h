@@ -17,6 +17,8 @@
 #ifndef CBSASL_UTIL_H_
 #define CBSASL_UTIL_H_ 1
 
+#include <platform/platform.h>
+
 /* Encode hexadecimal representation of bytes from src into dest.
  * Will write srclen * 2 bytes. */
 void cbsasl_hex_encode(char *dest, const char *src, size_t srclen);

@@ -14,10 +14,10 @@
  *   limitations under the License.
  */
 
-#include "config.h"
-
+#include <platform/platform.h>
 #include "cbsasl/cbsasl.h"
 #include "util.h"
+#include <stdlib.h>
 
 CBSASL_PUBLIC_API
 void cbsasl_dispose(cbsasl_conn_t **conn)

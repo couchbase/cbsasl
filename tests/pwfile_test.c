@@ -1,6 +1,10 @@
 #include <platform/platform.h>
-#include "cbsasl/cbsasl.h"
-#include "config.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include <cbsasl/cbsasl.h>
+
 #include "pwfile.h"
 
 const char *cbpwfile = "pwfile_test.pw";

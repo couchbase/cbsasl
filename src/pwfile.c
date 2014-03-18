@@ -13,12 +13,13 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-#include "config.h"
-
 #include "hash.h"
 #include "pwfile.h"
 
-#include <platform/platform.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 static cb_mutex_t uhash_lock;
 static user_db_entry_t **user_ht;
@@ -39,7 +40,7 @@ static void kill_whitey(char *s)
 
 static int u_hash_key(const char *u)
 {
-    cbsasl_uint32_t h = hash(u, strlen(u), 0) % n_uht_buckets;
+    uint32_t h = hash(u, strlen(u), 0) % n_uht_buckets;
     cb_assert(h < n_uht_buckets);
     return h;
 }

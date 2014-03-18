@@ -13,11 +13,10 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-#include "config.h"
 #include "plain.h"
 #include "pwfile.h"
 #include "util.h"
+#include <string.h>
 
 cbsasl_error_t plain_server_init()
 {

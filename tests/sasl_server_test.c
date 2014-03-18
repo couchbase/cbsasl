@@ -13,9 +13,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-#include "config.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <platform/platform.h>
-#include "cbsasl/cbsasl.h"
+#include <cbsasl/cbsasl.h>
 #include "cram-md5/hmac.h"
 #include "pwfile.h"
 #include "util.h"

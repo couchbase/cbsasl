@@ -17,8 +17,6 @@
 #ifndef SRC_PLAIN_PLAIN_H_
 #define SRC_PLAIN_PLAIN_H_ 1
 
-#include "config.h"
-
 #include "cbsasl/cbsasl.h"
 #define MECH_NAME_PLAIN "PLAIN"
 

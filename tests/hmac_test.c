@@ -19,10 +19,9 @@
  * in rfc 2202. http://tools.ietf.org/html/draft-cheng-hmac-test-cases-00
  */
 
-#include "config.h"
-#include <platform/platform.h>
-
 #include "cram-md5/hmac.h"
+#include <platform/platform.h>
+#include <string.h>
 
 static void test1()
 {
